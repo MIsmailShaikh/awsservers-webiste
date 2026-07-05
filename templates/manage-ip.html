@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Manage Static IP {{ ip.id }} — AWSServers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            display: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            primary: '#673de7',
+            bg: '#f8fafc',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900 flex h-screen overflow-hidden">
+  
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white border-r border-slate-200 h-full flex flex-col hidden md:flex shrink-0">
+    <div class="h-16 flex items-center px-6 border-b border-slate-200">
+      <a href="/" class="flex items-center gap-2 font-display text-lg font-bold">
+        <span class="grid h-8 w-8 place-items-center rounded-lg bg-primary text-white shadow-lg shadow-primary/30">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="8" rx="2" />
+            <rect x="2" y="14" width="20" height="8" rx="2" />
+            <line x1="6" y1="6" x2="6.01" y2="6" />
+            <line x1="6" y1="18" x2="6.01" y2="18" />
+          </svg>
+        </span>
+        AWSServers
+      </a>
+    </div>
+    <div class="flex-1 overflow-y-auto py-6 px-4">
+      <p class="px-2 text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Cloud Infrastructure</p>
+      <nav class="space-y-1">
+        <a href="/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors font-medium">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          VPS
+        </a>
+        <a href="/static-ips" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 text-primary font-semibold transition-colors">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Static IPs
+        </a>
+      </nav>
+    </div>
+    <div class="p-4 border-t border-slate-200">
+      <a href="/transactions" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors font-medium">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h0M2 9.5h20"/></svg>
+        Transactions
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+    
+    <!-- Topbar -->
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0">
+      <div class="flex items-center gap-4">
+        <button class="md:hidden text-slate-500 hover:text-slate-900">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="w-9 h-9 flex items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button class="w-9 h-9 flex items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="flex-1 overflow-auto p-6 lg:p-10 bg-slate-50">
+      
+      <!-- Breadcrumbs -->
+      <nav class="flex text-sm text-slate-500 font-medium mb-4">
+        <a href="/" class="hover:text-primary">🏠</a>
+        <span class="mx-2 text-slate-300">›</span>
+        <a href="/static-ips" class="hover:text-primary">Static IPs</a>
+        <span class="mx-2 text-slate-300">›</span>
+        <span class="text-slate-800">Manage IP: {{ ip.id }}</span>
+      </nav>
+
+      <!-- Header row -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <h1 class="text-2xl font-bold text-slate-900">Static IP Configuration</h1>
+      </div>
+
+      {% if payment_result %}
+      <div id="payment-banner" class="mb-6 rounded-2xl border p-5 flex items-center gap-4 shadow-sm transition-all duration-500
+        {% if payment_result.status in ['SUCCESS', 'PAID'] %}bg-emerald-50 border-emerald-200
+        {% elif payment_result.status in ['PENDING', 'ACTIVE'] %}bg-amber-50 border-amber-200
+        {% else %}bg-rose-50 border-rose-200{% endif %}">
+        {% if payment_result.status in ['SUCCESS', 'PAID'] %}
+          <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          </div>
+          <div class="flex-1">
+            <p class="font-bold text-emerald-800">Payment Successful!</p>
+            <p class="text-sm text-emerald-600">Order {{ payment_result.order_id }} — ₹{{ "{:,.2f}".format(payment_result.amount) }}</p>
+          </div>
+        {% elif payment_result.status in ['PENDING', 'ACTIVE'] %}
+          <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-amber-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          </div>
+          <div class="flex-1">
+            <p class="font-bold text-amber-800">Payment Processing</p>
+            <p class="text-sm text-amber-600">Order {{ payment_result.order_id }} — Waiting for bank confirmation</p>
+          </div>
+        {% else %}
+          <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </div>
+          <div class="flex-1">
+            <p class="font-bold text-rose-800">Payment Failed</p>
+            <p class="text-sm text-rose-600">{{ payment_result.failure_reason or 'Transaction was cancelled or failed. Please try again.' }}</p>
+          </div>
+        {% endif %}
+        <button onclick="document.getElementById('payment-banner').remove()" class="text-slate-400 hover:text-slate-600 shrink-0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <script>setTimeout(() => { const b = document.getElementById('payment-banner'); if(b) { b.style.opacity='0'; setTimeout(() => b.remove(), 500); } }, 8000);</script>
+      {% endif %}
+
+      <!-- Detail Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        
+        <!-- Card 1: IP details -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex-1">
+          <h2 class="text-sm font-extrabold text-slate-900 mb-6">IP details</h2>
+          
+          <div class="space-y-6">
+            <div class="flex justify-between items-center pb-6 border-b border-slate-50">
+              <span class="text-sm text-slate-500 font-medium">IP Address</span>
+              <span class="text-[15px] font-mono font-bold text-slate-800">{{ ip.address }}</span>
+            </div>
+            
+            <div class="flex justify-between items-center pb-6 border-b border-slate-50">
+              <span class="text-sm text-slate-500 font-medium">Pointed to</span>
+              <span class="text-[15px] font-bold text-slate-800 flex items-center gap-2">
+                {{ ip.pointed_to }}
+                {% if not "None" in ip.pointed_to %}
+                <a href="#" class="text-primary hover:text-indigo-800">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+                {% endif %}
+              </span>
+            </div>
+            
+            <div class="flex justify-between items-center pb-6 border-b border-slate-50">
+              <span class="text-sm text-slate-500 font-medium">Type</span>
+              <span class="text-[15px] font-bold text-slate-800">{{ ip.type }}</span>
+            </div>
+            
+            {% if ip.is_reserved %}
+            <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl flex gap-3 items-start">
+              <svg class="text-amber-600 mt-1 shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              <p class="text-sm text-amber-800 font-medium leading-relaxed">
+                <strong>Reserved Static IPs</strong> are premium, fully whitelisted IP addresses that guarantee the highest level of deliverability and unhindered connectivity across all networks and protocols.
+              </p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Card 2: Billing details -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col h-full relative">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-sm font-extrabold text-slate-900">Billing details</h2>
+            
+            {% if ip.bill_status == "Paid" %}
+            <div class="inline-flex items-center gap-1.5 bg-[#E6F8F0] px-2 py-0.5 rounded-md border border-[#CFF0E0]">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#059669]"></span>
+              <span class="text-[10px] font-bold text-[#059669] uppercase tracking-wide">Paid</span>
+            </div>
+            {% elif ip.bill_status == "Upcoming" %}
+            <div class="inline-flex items-center gap-1.5 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+              <span class="text-[10px] font-bold text-slate-600 uppercase tracking-wide">Upcoming</span>
+            </div>
+            {% elif ip.bill_status == "Pending" %}
+            <div class="inline-flex items-center gap-1.5 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+              <span class="text-[10px] font-bold text-amber-700 uppercase tracking-wide">Pending</span>
+            </div>
+            {% else %}
+            <div class="inline-flex items-center gap-1.5 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+              <span class="text-[10px] font-bold text-rose-700 uppercase tracking-wide">Unpaid</span>
+            </div>
+            {% endif %}
+          </div>
+          
+          <div class="space-y-6 flex-1">
+            <div class="flex justify-between items-center pb-6 border-b border-slate-50">
+              <span class="text-sm text-slate-500 font-medium">Bill generation</span>
+              <span class="text-[15px] font-bold text-slate-800">{{ ip.gen_date }}</span>
+            </div>
+            
+            {% if ip.can_pay %}
+            <div class="flex justify-between items-center pb-6 border-b border-slate-50">
+              <span class="text-sm text-slate-500 font-medium">Due date</span>
+              <span class="text-[15px] font-bold text-slate-800">{{ ip.due_date }}</span>
+            </div>
+            
+            <div class="flex justify-between items-center pb-6 border-b border-slate-50">
+              <span class="text-sm text-slate-500 font-medium">Amount due</span>
+              {% if ip.type == "Reserved Static IP" %}
+                <span class="text-[15px] font-bold text-slate-800">₹ 14,285.52</span>
+              {% else %}
+                <span class="text-[15px] font-bold text-slate-800">Included</span>
+              {% endif %}
+            </div>
+            {% else %}
+            <div class="flex justify-between items-center pb-6 border-b border-slate-50">
+              <span class="text-sm text-slate-400 font-medium">Due date</span>
+              <span class="text-[15px] font-bold text-slate-400">--</span>
+            </div>
+            
+            <div class="flex justify-between items-center pb-6 border-b border-slate-50">
+              <span class="text-sm text-slate-400 font-medium">Amount due</span>
+              <span class="text-[15px] font-bold text-slate-400">--</span>
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="mt-8">
+            {% if ip.bill_status == "Paid" %}
+            <div class="bg-[#E6F8F0] border border-[#CFF0E0] rounded-xl p-4 flex items-center gap-3">
+              <svg class="text-[#059669]" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <p class="text-sm font-bold text-[#059669]">Last transaction was successful.</p>
+            </div>
+            {% elif ip.bill_status == "Upcoming" %}
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center justify-center gap-2">
+              <svg class="animate-spin w-4 h-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              <p class="text-sm font-bold text-slate-500">Bill is generating...</p>
+            </div>
+            {% elif ip.bill_status == "Pending" %}
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-center gap-3">
+              <svg class="animate-spin w-5 h-5 text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              <p class="text-sm font-bold text-amber-700">Payment processing...</p>
+            </div>
+            {% elif ip.can_pay %}
+            <a href="/checkout-ip/{{ ip.id }}" class="block w-full text-center px-4 py-3 bg-primary text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm shadow-primary/20">
+              Make Payment
+            </a>
+            {% else %}
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center justify-center">
+              <p class="text-sm font-bold text-slate-500">Payment will be available after bill generation.</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+</body>
+</html>

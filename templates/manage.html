@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Manage AWS VPS ID:56892AHF — AWSServers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            display: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            primary: '#673de7',
+            bg: '#f8fafc',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900 flex h-screen overflow-hidden">
+  
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white border-r border-slate-200 h-full flex flex-col hidden md:flex shrink-0">
+    <div class="h-16 flex items-center px-6 border-b border-slate-200">
+      <a href="/" class="flex items-center gap-2 font-display text-lg font-bold">
+        <span class="grid h-8 w-8 place-items-center rounded-lg bg-primary text-white shadow-lg shadow-primary/30">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="8" rx="2" />
+            <rect x="2" y="14" width="20" height="8" rx="2" />
+            <line x1="6" y1="6" x2="6.01" y2="6" />
+            <line x1="6" y1="18" x2="6.01" y2="18" />
+          </svg>
+        </span>
+        AWSServers
+      </a>
+    </div>
+    <div class="flex-1 overflow-y-auto py-6 px-4">
+      <p class="px-2 text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Cloud Infrastructure</p>
+      <nav class="space-y-1">
+        <a href="/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 text-primary font-semibold transition-colors">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          VPS
+        </a>
+        <a href="/static-ips" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors font-medium">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Static IPs
+        </a>
+      </nav>
+    </div>
+    <div class="p-4 border-t border-slate-200">
+      <a href="/transactions" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors font-medium">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h0M2 9.5h20"/></svg>
+        Transactions
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+    
+    <!-- Topbar -->
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0">
+      <div class="flex items-center gap-4">
+        <button class="md:hidden text-slate-500 hover:text-slate-900">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="w-9 h-9 flex items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button class="w-9 h-9 flex items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="flex-1 overflow-auto p-6 lg:p-10 bg-slate-50">
+      
+      <!-- Breadcrumbs -->
+      <nav class="flex text-sm text-slate-500 font-medium mb-4">
+        <a href="/" class="hover:text-primary">🏠</a>
+        <span class="mx-2 text-slate-300">›</span>
+        <a href="/dashboard" class="hover:text-primary">VPS</a>
+        <span class="mx-2 text-slate-300">›</span>
+        <span class="text-slate-800">AWS VPS ID:56892AHF - Overview</span>
+      </nav>
+
+      <!-- Header row -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <h1 class="text-2xl font-bold text-slate-900">Overview</h1>
+        <button class="inline-flex items-center gap-2 bg-white text-slate-800 border border-slate-200 px-4 py-2 rounded-lg font-bold hover:bg-slate-50 shadow-sm transition-all active:scale-95">
+          Terminal
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </button>
+      </div>
+
+      {% if payment_result %}
+      <div id="payment-banner" class="mb-6 rounded-2xl border p-5 flex items-center gap-4 shadow-sm transition-all duration-500
+        {% if payment_result.status in ['SUCCESS', 'PAID'] %}bg-emerald-50 border-emerald-200
+        {% elif payment_result.status in ['PENDING', 'ACTIVE'] %}bg-amber-50 border-amber-200
+        {% else %}bg-rose-50 border-rose-200{% endif %}">
+        {% if payment_result.status in ['SUCCESS', 'PAID'] %}
+          <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          </div>
+          <div class="flex-1">
+            <p class="font-bold text-emerald-800">Payment Successful!</p>
+            <p class="text-sm text-emerald-600">Order {{ payment_result.order_id }} — ₹{{ "{:,.2f}".format(payment_result.amount) }}</p>
+          </div>
+        {% elif payment_result.status in ['PENDING', 'ACTIVE'] %}
+          <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-amber-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          </div>
+          <div class="flex-1">
+            <p class="font-bold text-amber-800">Payment Processing</p>
+            <p class="text-sm text-amber-600">Order {{ payment_result.order_id }} — Waiting for bank confirmation</p>
+          </div>
+        {% else %}
+          <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </div>
+          <div class="flex-1">
+            <p class="font-bold text-rose-800">Payment Failed</p>
+            <p class="text-sm text-rose-600">{{ payment_result.failure_reason or 'Transaction was cancelled or failed. Please try again.' }}</p>
+          </div>
+        {% endif %}
+        <button onclick="document.getElementById('payment-banner').remove()" class="text-slate-400 hover:text-slate-600 shrink-0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <script>setTimeout(() => { const b = document.getElementById('payment-banner'); if(b) { b.style.opacity='0'; setTimeout(() => b.remove(), 500); } }, 8000);</script>
+      {% endif %}
+
+      <!-- Identity Card -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6 p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-[#FFEAE0] flex items-center justify-center shrink-0 border border-[#FFD5C2]">
+              <img src="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" alt="Ubuntu" class="w-6 h-6 object-contain" />
+            </div>
+            <div>
+              <p class="text-[15px] font-bold text-slate-900">Ubuntu 22.04 LTS</p>
+              <div class="flex items-center gap-2 mt-1">
+                <p class="text-xs text-slate-500 font-semibold">KVM</p>
+                <div class="inline-flex items-center gap-1.5 bg-[#E6F8F0] px-2 py-0.5 rounded-md border border-[#CFF0E0]">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#059669]"></span>
+                  <span class="text-[10px] font-bold text-[#059669] uppercase tracking-wide">Running</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-12">
+            <div>
+              <p class="text-xs text-slate-500 font-bold mb-1">Root access</p>
+              <div class="flex items-center gap-2">
+                <p class="text-[13px] font-bold text-slate-800">ssh root@72.60.220.68</p>
+                <button class="text-primary hover:text-indigo-800" title="Copy"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+              </div>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 font-bold mb-1">Root password</p>
+              <a href="#" class="text-[13px] font-bold text-primary hover:underline">Change</a>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button class="px-4 py-2 rounded-lg border border-slate-200 text-[13px] font-bold text-primary hover:bg-indigo-50 transition-colors">
+              Reboot VPS
+            </button>
+            <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+            </button>
+            <button class="w-9 h-9 rounded-lg border border-primary text-primary hover:bg-indigo-50 transition-colors flex items-center justify-center bg-primary/5">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
+        
+        <!-- CPU -->
+        <div class="flex items-start gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between mb-0.5">
+              <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Processor</p>
+              <p id="cpu-val" class="text-[10px] font-bold text-blue-600 transition-all duration-300">14%</p>
+            </div>
+            <p class="text-sm font-bold text-slate-900 truncate">128 vCPU</p>
+            <div class="mt-3 h-10 w-full relative">
+              <canvas id="cpuChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- RAM -->
+        <div class="flex items-start gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between mb-0.5">
+              <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Memory</p>
+              <p id="ram-val" class="text-[10px] font-bold text-emerald-600 transition-all duration-300">54%</p>
+            </div>
+            <p id="ram-text" class="text-sm font-bold text-slate-900 truncate transition-all duration-300">32.4 / 60 GB</p>
+            <div class="mt-3 h-10 w-full relative">
+              <canvas id="ramChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Storage -->
+        <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600 shrink-0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between mb-0.5">
+              <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Storage</p>
+              <p class="text-[10px] font-bold text-purple-600">21%</p>
+            </div>
+            <p class="text-sm font-bold text-slate-900 truncate">840 / 4,000 GB</p>
+            <div class="mt-2 w-full h-1 bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-purple-500 rounded-full" style="width: 21%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Network -->
+        <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center text-cyan-600 shrink-0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div>
+            <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Bandwidth</p>
+            <p class="text-sm font-bold text-slate-900 mt-0.5">10 Gbps Unmetered</p>
+          </div>
+        </div>
+
+        <!-- Root Access -->
+        <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600 shrink-0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div>
+            <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Root Access</p>
+            <div class="flex items-center gap-2 mt-0.5">
+              <p class="text-sm font-bold text-slate-900">root:••••••••</p>
+              <button class="text-slate-400 hover:text-primary transition-colors" title="Copy Password">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Datacenter</p>
+            <p class="text-sm font-bold text-slate-900 mt-0.5">Mumbai, IN (ap-south)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Chart Section -->
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-[11px] font-bold text-slate-500 uppercase tracking-wide">Network Traffic (Live)</h3>
+          <div class="flex items-center gap-1.5 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse"></span>
+            <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wide">Live Stream</span>
+          </div>
+        </div>
+        <div class="h-48 w-full relative">
+          <canvas id="networkChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Quick Action Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <a href="#" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-slate-300 transition-colors flex justify-between items-center group">
+          <div>
+            <p class="text-[12px] font-semibold text-slate-500 mb-1">SSH key</p>
+            <p class="text-[14px] font-bold text-slate-900">Manage</p>
+          </div>
+          <svg class="text-slate-400 group-hover:text-slate-700 transition-colors" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        <a href="#" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-slate-300 transition-colors flex justify-between items-center group">
+          <div>
+            <p class="text-[12px] font-semibold text-slate-500 mb-1">Firewall rules</p>
+            <p class="text-[14px] font-bold text-slate-900">9</p>
+          </div>
+          <svg class="text-slate-400 group-hover:text-slate-700 transition-colors" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        <a href="#" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-slate-300 transition-colors flex justify-between items-center group">
+          <div>
+            <p class="text-[12px] font-semibold text-slate-500 mb-1">Snapshot & backups</p>
+            <p class="text-[14px] font-bold text-slate-900">3</p>
+          </div>
+          <svg class="text-slate-400 group-hover:text-slate-700 transition-colors" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        <a href="#" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-slate-300 transition-colors flex justify-between items-center group">
+          <div>
+            <p class="text-[12px] font-semibold text-slate-500 mb-1">Malware scanner</p>
+            <p class="text-[14px] font-bold text-slate-900">Active</p>
+          </div>
+          <svg class="text-slate-400 group-hover:text-slate-700 transition-colors" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+
+      <!-- Details Panels -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-20">
+        
+        <!-- VPS Details -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <h2 class="text-sm font-extrabold text-slate-900 mb-6">VPS details</h2>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">Server location</span>
+              <div class="flex items-center gap-2">
+                <span class="text-[13px] font-medium text-slate-800">India - Mumbai</span>
+                <svg class="text-primary w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">OS</span>
+              <div class="flex items-center gap-2">
+                <span class="text-[13px] font-medium text-slate-800">Ubuntu 22.04 LTS</span>
+                <svg class="text-primary w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">Hostname</span>
+              <div class="flex items-center gap-2">
+                <span class="text-[13px] font-medium text-slate-800">AWS VPS ID:56892AHF</span>
+                <svg class="text-primary w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">VPS uptime</span>
+              <span class="text-[13px] font-medium text-slate-800">199 days 6 hours</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">SSH username</span>
+              <div class="flex items-center gap-2">
+                <span class="text-[13px] font-medium text-slate-800">root</span>
+                <svg class="text-primary w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </div>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">IPv4</span>
+              <div class="flex items-center gap-2">
+                <span class="text-[13px] font-medium text-slate-800">72.60.220.68</span>
+                <svg class="text-primary w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </div>
+            </div>
+            <div class="flex justify-between items-center py-2">
+              <span class="text-[13px] text-slate-500 font-medium">Current backup schedule</span>
+              <div class="flex items-center gap-2">
+                <span class="text-[13px] font-medium text-slate-800">Weekly</span>
+                <svg class="text-primary w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plan Details -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <h2 class="text-sm font-extrabold text-slate-900 mb-6">Plan details</h2>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">Current plan</span>
+              <div class="flex items-center gap-2">
+                <span class="text-[13px] font-medium text-slate-800">KVM</span>
+                <a href="#" class="text-[13px] font-bold text-primary hover:underline">Upgrade</a>
+              </div>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">Expiration date</span>
+              <div class="flex items-center gap-2">
+                <span class="text-[13px] font-medium text-slate-800">2026-11-25</span>
+                <a href="#" class="text-[13px] font-bold text-primary hover:underline">Renew</a>
+              </div>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">Auto-renewal</span>
+              <a href="#" class="text-[13px] font-bold text-primary hover:underline">Turn on</a>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">CPU core</span>
+              <span class="text-[13px] font-medium text-slate-800">128</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">Memory</span>
+              <span class="text-[13px] font-medium text-slate-800">60 GB</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">Disk space</span>
+              <span class="text-[13px] font-medium text-slate-800">4,000 GB</span>
+            </div>
+            <div class="flex justify-between items-center py-2">
+              <span class="text-[13px] text-slate-500 font-medium">Bandwidth</span>
+              <span class="text-[13px] font-medium text-slate-800">Unmetered</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing Details -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-sm font-extrabold text-slate-900">Billing details</h2>
+            {% if is_paid %}
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-emerald-200 bg-emerald-50 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span>Paid</span>
+            </div>
+            {% elif is_pending %}
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-amber-200 bg-amber-50 text-[10px] font-bold uppercase tracking-wide text-amber-700">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+              <span>Pending</span>
+            </div>
+            {% else %}
+            <div id="billing-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[10px] font-bold uppercase tracking-wide hidden">
+              <span id="billing-status-dot" class="w-1.5 h-1.5 rounded-full"></span>
+              <span id="billing-status-text"></span>
+            </div>
+            {% endif %}
+          </div>
+          <div class="space-y-4 flex-1">
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">Bill generation</span>
+              <span class="text-[13px] font-medium text-slate-800">16th of every month</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">Due date</span>
+              <span class="text-[13px] font-medium text-slate-800">20th of every month</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+              <span class="text-[13px] text-slate-500 font-medium">Amount due</span>
+              <span class="text-[14px] font-bold text-slate-900">{% if is_paid or is_pending %}--{% else %}₹ 39,865.00{% endif %}</span>
+            </div>
+          </div>
+          {% if is_paid %}
+          <div class="mt-6 p-3 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center gap-3">
+             <svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+             <p class="text-[13px] font-semibold text-emerald-800">Last transaction was successful.</p>
+          </div>
+          {% elif is_pending %}
+          <div class="mt-6 p-3 rounded-lg bg-amber-50 border border-amber-100 flex items-center gap-3">
+             <svg class="w-5 h-5 text-amber-500 shrink-0 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+             <p class="text-[13px] font-semibold text-amber-800">Payment processing...</p>
+          </div>
+          {% else %}
+          <button id="view-bill-btn" onclick="openRenewModal()" class="mt-6 w-full py-2.5 rounded-lg border border-slate-200 text-[13px] font-bold text-slate-800 hover:border-primary hover:text-primary transition-colors">
+            View Bill / Renew
+          </button>
+          {% endif %}
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Renew Modal Overlay -->
+  <div id="renewModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow-xl transform scale-95 opacity-0 transition-all duration-300 overflow-hidden flex flex-col max-h-[90vh]" id="renewModalContent">
+      
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-slate-100 flex justify-between items-start">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">Renew your AWS VPS ID:56892AHF</h2>
+          <p class="text-[13px] text-slate-500 mt-1">Review the details and proceed to checkout</p>
+        </div>
+        <button onclick="closeRenewModal()" class="text-slate-400 hover:text-slate-700 transition-colors">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto">
+        <!-- Bill Period Card -->
+        <div class="border border-slate-200 rounded-xl p-5 mb-5">
+          <label class="block text-[13px] font-bold text-slate-900 mb-3">Bill Period</label>
+          <div class="flex items-center justify-between">
+            <div class="relative w-40">
+              <select class="w-full appearance-none bg-white border border-slate-200 rounded-lg py-2.5 pl-4 pr-10 text-[14px] text-slate-700 font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                <option>1 month</option>
+                <option>3 months</option>
+                <option>6 months</option>
+                <option>12 months</option>
+              </select>
+              <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+            <p class="text-xl font-bold text-slate-900">₹ 33,783.90</p>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="mb-6">
+          <label class="block text-[13px] font-bold text-slate-900 mb-3">Payment method</label>
+          <div class="border border-slate-200 rounded-xl p-4 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="bg-[#1434CB] w-10 h-6 rounded flex items-center justify-center text-white text-[10px] font-bold tracking-wider">VISA</div>
+              <span class="text-[14px] text-slate-700 font-medium">Card <span class="tracking-widest">•••• ••••</span> <svg class="inline-block w-4 h-4 text-slate-400 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></span>
+            </div>
+            <svg class="text-slate-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+        </div>
+
+        <!-- Summary Box -->
+        <div class="bg-slate-50 rounded-xl p-6">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-[14px] text-slate-600">Expiration date</span>
+            <span id="dynamic-expiration-date" class="text-[14px] font-semibold text-slate-900"></span>
+          </div>
+          
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-[14px] font-semibold text-slate-900">Coupon code <a href="#" class="text-primary font-bold ml-1 hover:underline">Add</a></span>
+          </div>
+          
+          <div class="flex justify-between items-center mb-6">
+            <span class="text-[14px] text-slate-600 flex items-center gap-1.5">Taxes & fees <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
+            <span class="text-[14px] font-semibold text-slate-900">₹ 6,081.10</span>
+          </div>
+          
+          <div class="flex justify-between items-center pt-5 border-t border-slate-200 mb-6">
+            <span class="text-lg font-bold text-slate-900">Total</span>
+            <span class="text-xl font-bold text-slate-900">₹ 39,865.00</span>
+          </div>
+          
+          <p class="text-[12px] text-slate-500 leading-relaxed">
+            By checking out, you agree with our <a href="#" class="font-bold underline text-slate-600 hover:text-slate-900">Terms of Service</a> and confirm that you have read our <a href="#" class="font-bold underline text-slate-600 hover:text-slate-900">Privacy Policy</a>
+          </p>
+        </div>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="p-6 border-t border-slate-100 bg-white rounded-b-2xl">
+        <button id="checkout-btn" class="w-full bg-primary hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-sm active:scale-[0.98]">
+          Complete Payment
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Modal toggle logic
+    function openRenewModal() {
+      const modal = document.getElementById('renewModal');
+      const content = document.getElementById('renewModalContent');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      content.classList.remove('scale-95', 'opacity-0');
+    }
+
+    function closeRenewModal() {
+      const modal = document.getElementById('renewModal');
+      const content = document.getElementById('renewModalContent');
+      content.classList.add('scale-95', 'opacity-0');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    // Cashfree Checkout Logic
+    const cashfree = Cashfree({ mode: "sandbox" });
+    const checkoutBtn = document.getElementById('checkout-btn');
+    
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', async () => {
+            checkoutBtn.disabled = true;
+            checkoutBtn.innerText = 'Initializing...';
+            
+            try {
+                const response = await fetch('/create-order', { method: 'POST' });
+                const data = await response.json();
+                
+                // Handle duplicate payment prevention
+                if (response.status === 409) {
+                    alert(data.error || 'A payment is already in progress.');
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.innerText = 'Complete Payment';
+                    return;
+                }
+                if (data.payment_session_id === 'simulated') {
+                    // Show a beautiful simulated success state!
+                    checkoutBtn.innerHTML = `
+                        <div class="flex items-center justify-center space-x-2">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Payment Successful!</span>
+                        </div>
+                    `;
+                    checkoutBtn.classList.remove('bg-primary', 'hover:bg-indigo-700');
+                    checkoutBtn.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
+                    
+                    setTimeout(() => {
+                        window.location.href = "/simulate-vps-success";
+                    }, 1500);
+                    
+                } else if (data.payment_session_id) {
+                    cashfree.checkout({
+                        paymentSessionId: data.payment_session_id,
+                        redirectTarget: "_modal"
+                    }).then(function(result) {
+                        if (result.error) {
+                            alert("Payment Failed or Cancelled: " + result.error.message);
+                            checkoutBtn.disabled = false;
+                            checkoutBtn.innerText = 'Complete Payment';
+                        } else if (result.paymentDetails) {
+                            // Payment was completed in the modal! 
+                            // Let the backend verify it and redirect back here with a banner.
+                            window.location.href = '/payment-status?order_id=' + data.order_id;
+                        }
+                    });
+                } else {
+                    alert('Error creating order: ' + JSON.stringify(data));
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.innerText = 'Complete Payment';
+                }
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred during checkout.');
+                checkoutBtn.disabled = false;
+                checkoutBtn.innerText = 'Complete Payment';
+            }
+        });
+    }
+
+    // Dynamic Billing Status Logic
+    function updateBillingStatus() {
+      const today = new Date().getDate();
+      const badge = document.getElementById('billing-status-badge');
+      const dot = document.getElementById('billing-status-dot');
+      const text = document.getElementById('billing-status-text');
+      const viewBillBtn = document.getElementById('view-bill-btn');
+      const expirationDateEl = document.getElementById('dynamic-expiration-date');
+      
+      if (badge && dot && text) {
+        badge.classList.remove('hidden', 'bg-slate-50', 'border-slate-200', 'text-slate-600', 'bg-[#E6F8F0]', 'border-[#CFF0E0]', 'text-[#059669]', 'bg-rose-50', 'border-rose-200', 'text-rose-700');
+        dot.classList.remove('bg-slate-400', 'bg-[#059669]', 'bg-rose-500');
+
+        if (today < 16) {
+          // Upcoming
+          badge.classList.add('bg-slate-50', 'border-slate-200', 'text-slate-600');
+          dot.classList.add('bg-slate-400');
+          text.innerText = 'Upcoming';
+        } else if (today >= 16 && today <= 20) {
+          // Bill Generated / Unpaid
+          badge.classList.add('bg-[#E6F8F0]', 'border-[#CFF0E0]', 'text-[#059669]');
+          dot.classList.add('bg-[#059669]');
+          text.innerText = 'Bill Generated';
+        } else {
+          // Overdue
+          badge.classList.add('bg-rose-50', 'border-rose-200', 'text-rose-700');
+          dot.classList.add('bg-rose-500', 'animate-pulse');
+          text.innerText = 'Overdue';
+        }
+      }
+      
+      // Calculate dynamic expiration date
+      const currentDate = new Date();
+      let expYear = currentDate.getFullYear();
+      let expMonth = currentDate.getMonth();
+      
+      if (today >= 16) {
+          expMonth += 1;
+          if (expMonth > 11) {
+              expMonth = 0;
+              expYear += 1;
+          }
+      }
+      
+      // Format as YYYY-MM-DD
+      const formattedMonth = String(expMonth + 1).padStart(2, '0');
+      const expirationDateStr = `${expYear}-${formattedMonth}-20`;
+      
+      if (expirationDateEl) {
+          expirationDateEl.innerText = expirationDateStr;
+      }
+    }
+    updateBillingStatus();
+
+    // Dynamic Server Stats Simulation
+    const cpuVal = document.getElementById('cpu-val');
+    const ramVal = document.getElementById('ram-val');
+    const ramText = document.getElementById('ram-text');
+    
+    let currentCpu = 14;
+    let currentRam = 32.4;
+    
+    // CPU Mini Chart
+    const cpuCtx = document.getElementById('cpuChart').getContext('2d');
+    const cpuGradient = cpuCtx.createLinearGradient(0, 0, 0, 40);
+    cpuGradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
+    cpuGradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+    
+    const cpuChart = new Chart(cpuCtx, {
+        type: 'line',
+        data: {
+            labels: Array(15).fill(''),
+            datasets: [{
+                data: Array(15).fill(14),
+                borderColor: '#3b82f6',
+                backgroundColor: cpuGradient,
+                borderWidth: 1.5,
+                pointRadius: 0,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { enabled: false } },
+            scales: { x: { display: false }, y: { display: false, min: 0, max: 100 } },
+            animation: { duration: 0 }
+        }
+    });
+
+    // RAM Mini Chart
+    const ramCtx = document.getElementById('ramChart').getContext('2d');
+    const ramGradient = ramCtx.createLinearGradient(0, 0, 0, 40);
+    ramGradient.addColorStop(0, 'rgba(16, 185, 129, 0.4)');
+    ramGradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
+    
+    const ramChart = new Chart(ramCtx, {
+        type: 'line',
+        data: {
+            labels: Array(15).fill(''),
+            datasets: [{
+                data: Array(15).fill(54),
+                borderColor: '#10b981',
+                backgroundColor: ramGradient,
+                borderWidth: 1.5,
+                pointRadius: 0,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { enabled: false } },
+            scales: { x: { display: false }, y: { display: false, min: 0, max: 100 } },
+            animation: { duration: 0 }
+        }
+    });
+    
+    setInterval(() => {
+        // CPU varies quickly
+        currentCpu = Math.max(2, Math.min(99, currentCpu + (Math.random() * 12 - 5)));
+        if(cpuVal) cpuVal.innerText = Math.round(currentCpu) + '%';
+        const cData = cpuChart.data.datasets[0].data;
+        cData.shift();
+        cData.push(currentCpu);
+        cpuChart.update();
+        
+        // RAM varies slowly
+        currentRam = Math.max(12, Math.min(58, currentRam + (Math.random() * 1.5 - 0.5)));
+        const ramPercent = (currentRam / 60) * 100;
+        if(ramVal) ramVal.innerText = Math.round(ramPercent) + '%';
+        if(ramText) ramText.innerText = currentRam.toFixed(1) + ' / 60 GB';
+        const rData = ramChart.data.datasets[0].data;
+        rData.shift();
+        rData.push(ramPercent);
+        ramChart.update();
+    }, 2000);
+
+    // Live Network Traffic Chart using Chart.js
+    const ctx = document.getElementById('networkChart').getContext('2d');
+    
+    // Create a sleek gradient fill
+    const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+    gradient.addColorStop(0, 'rgba(103, 61, 231, 0.4)'); // Primary purple
+    gradient.addColorStop(1, 'rgba(103, 61, 231, 0)');
+    
+    // Initial random data array
+    const dataPoints = Array.from({length: 25}, () => Math.floor(Math.random() * 400) + 100);
+    
+    const networkChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Array(25).fill(''), // Empty labels just for spacing
+            datasets: [{
+                label: 'Traffic (Mbps)',
+                data: dataPoints,
+                borderColor: '#673de7', // Primary purple
+                backgroundColor: gradient,
+                borderWidth: 2,
+                pointRadius: 0,
+                pointHoverRadius: 4,
+                fill: true,
+                tension: 0.4 // Smooth curves
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1e293b',
+                    padding: 10,
+                    titleFont: { family: 'Inter', size: 12 },
+                    bodyFont: { family: 'Inter', size: 12 },
+                    displayColors: false
+                }
+            },
+            scales: {
+                x: { display: false },
+                y: { 
+                    display: true, 
+                    border: { display: false },
+                    grid: { 
+                        color: '#f1f5f9',
+                        drawTicks: false
+                    },
+                    min: 0,
+                    max: 800,
+                    ticks: { 
+                        color: '#94a3b8', 
+                        font: { family: 'Inter', size: 10, weight: 600 },
+                        padding: 10,
+                        stepSize: 200,
+                        callback: function(value) {
+                            return value + ' Mbps';
+                        }
+                    }
+                }
+            },
+            animation: { duration: 0 } // handled manually for live effect
+        }
+    });
+    
+    // Update chart data periodically
+    setInterval(() => {
+        const data = networkChart.data.datasets[0].data;
+        data.shift(); // Remove oldest point
+        
+        // Generate new point based on the last one to make it look realistic (trending)
+        const lastValue = data[data.length - 1];
+        const change = (Math.random() * 200) - 100;
+        let newValue = Math.max(50, Math.min(750, lastValue + change));
+        
+        data.push(newValue);
+        networkChart.update();
+    }, 1500);
+
+  </script>
+  
+
+</body>
+</html>

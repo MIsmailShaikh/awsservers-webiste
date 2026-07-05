@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Renew Static IP - AWS Servers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+  <style>
+    :root {
+      --primary: #6366f1;
+    }
+    .text-primary { color: var(--primary); }
+    .bg-primary { background-color: var(--primary); }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-800 flex items-center justify-center py-12">
+  
+  <div class="bg-white w-full max-w-lg rounded-2xl shadow-xl overflow-hidden flex flex-col">
+    
+    <!-- Header -->
+    <div class="p-6 border-b border-slate-100 flex justify-between items-start bg-white">
+      <div>
+        <h2 class="text-xl font-bold text-slate-900">Renew your Static IP ID:{{ ip_id }}</h2>
+        <p class="text-[13px] text-slate-500 mt-1">Review the details and proceed to checkout</p>
+      </div>
+      <a href="/static-ips" class="text-slate-400 hover:text-slate-700 transition-colors">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </a>
+    </div>
+
+    <!-- Body -->
+    <div class="p-6 overflow-y-auto">
+      <!-- Bill Period Card -->
+      <div class="border border-slate-200 rounded-xl p-5 mb-5">
+        <label class="block text-[13px] font-bold text-slate-900 mb-3">Bill Period</label>
+        <div class="flex items-center justify-between">
+          <div class="relative w-40">
+            <select class="w-full appearance-none bg-white border border-slate-200 rounded-lg py-2.5 pl-4 pr-10 text-[14px] text-slate-700 font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+              <option>1 month</option>
+              <option>3 months</option>
+              <option>6 months</option>
+              <option>12 months</option>
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </div>
+          <p class="text-xl font-bold text-slate-900">₹ 14,285.52</p>
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="mb-6">
+        <label class="block text-[13px] font-bold text-slate-900 mb-3">Payment method</label>
+        <div class="border border-slate-200 rounded-xl p-4 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="bg-[#1434CB] w-10 h-6 rounded flex items-center justify-center text-white text-[10px] font-bold tracking-wider">VISA</div>
+            <span class="text-[14px] text-slate-700 font-medium">Card <span class="tracking-widest">•••• ••••</span> <svg class="inline-block w-4 h-4 text-slate-400 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></span>
+          </div>
+          <svg class="text-slate-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- Summary Box -->
+      <div class="bg-slate-50 rounded-xl p-6 border border-slate-100">
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-[14px] text-slate-600">Expiration date</span>
+          <span class="text-[14px] font-semibold text-slate-900">{{ expiration_date }}</span>
+        </div>
+        
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-[14px] font-semibold text-slate-900">Coupon code <a href="#" class="text-primary font-bold ml-1 hover:underline">Add</a></span>
+        </div>
+        
+        <div class="flex justify-between items-center mb-6">
+          <span class="text-[14px] text-slate-600 flex items-center gap-1.5">Taxes & fees <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
+          <span class="text-[14px] font-semibold text-slate-900">₹ 2,571.38</span>
+        </div>
+        
+        <div class="flex justify-between items-center pt-5 border-t border-slate-200 mb-6">
+          <span class="text-lg font-bold text-slate-900">Total</span>
+          <span class="text-xl font-bold text-slate-900">₹ 16,856.90</span>
+        </div>
+        
+        <p class="text-[12px] text-slate-500 leading-relaxed">
+          By checking out, you agree with our <a href="#" class="font-bold underline text-slate-600 hover:text-slate-900">Terms of Service</a> and confirm that you have read our <a href="#" class="font-bold underline text-slate-600 hover:text-slate-900">Privacy Policy</a>
+        </p>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="p-6 border-t border-slate-100 bg-white">
+      <button id="checkout-btn" class="w-full bg-primary hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-sm active:scale-[0.98]">
+        Complete Payment
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    // Cashfree Checkout Logic
+    const cashfree = Cashfree({ mode: "sandbox" });
+    const checkoutBtn = document.getElementById('checkout-btn');
+    
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', async () => {
+            checkoutBtn.disabled = true;
+            checkoutBtn.innerText = 'Initializing...';
+            
+            try {
+                const response = await fetch('/create-ip-order', { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ip_id: '{{ ip_id }}' })
+                });
+                const data = await response.json();
+                
+                // Handle duplicate payment prevention
+                if (response.status === 409) {
+                    alert(data.error || 'A payment for this IP is already in progress.');
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.innerText = 'Complete Payment';
+                    return;
+                }
+
+                if (data.payment_session_id === 'simulated') {
+                    // Show simulated success state
+                    checkoutBtn.innerHTML = `
+                        <div class="flex items-center justify-center space-x-2">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Payment Successful!</span>
+                        </div>
+                    `;
+                    checkoutBtn.classList.remove('bg-primary', 'hover:bg-indigo-700');
+                    checkoutBtn.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
+                    
+                    setTimeout(() => {
+                        window.location.href = '/simulate-ip-success/{{ ip_id }}';
+                    }, 1500);
+                    
+                } else if (data.payment_session_id) {
+                    cashfree.checkout({
+                        paymentSessionId: data.payment_session_id,
+                        redirectTarget: "_modal"
+                    }).then(function(result) {
+                        if (result.error) {
+                            alert("Payment Failed or Cancelled: " + result.error.message);
+                            checkoutBtn.disabled = false;
+                            checkoutBtn.innerText = 'Complete Payment';
+                        } else if (result.paymentDetails) {
+                            // Payment was completed in the modal!
+                            // Redirect to payment status route to verify and redirect with banner.
+                            window.location.href = '/payment-status?order_id=' + data.order_id + '&ip_id={{ ip_id }}';
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Error creating order:", error);
+                alert("Failed to initialize payment. Please try again.");
+                checkoutBtn.disabled = false;
+                checkoutBtn.innerText = 'Complete Payment';
+            }
+        });
+    }
+  </script>
+</body>
+</html>
