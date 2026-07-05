@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import os
+from dotenv import load_dotenv
 from datetime import datetime
 import calendar
 from models import db, User, VPSInstance, Transaction
+
+load_dotenv()
+
 app = Flask(__name__)
 app.secret_key = 'super_secret_key_change_in_production'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:shaikh123@localhost:5432/awsservers'
