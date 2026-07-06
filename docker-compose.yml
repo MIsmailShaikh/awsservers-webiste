@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:shaikh123@db:5432/awsservers
+      - CASHFREE_APP_ID=${CASHFREE_APP_ID:-TEST10893622f660c5a84a25452445ec22639801}
+      - CASHFREE_SECRET_KEY=${CASHFREE_SECRET_KEY:-dummy}
+      - CASHFREE_ENV=${CASHFREE_ENV:-SANDBOX}
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=shaikh123
+      - POSTGRES_DB=awsservers
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
