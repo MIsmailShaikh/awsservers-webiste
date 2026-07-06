@@ -622,22 +622,7 @@
                     checkoutBtn.innerText = 'Complete Payment';
                     return;
                 }
-                if (data.payment_session_id === 'simulated') {
-                    // Show a beautiful simulated success state!
-                    checkoutBtn.innerHTML = `
-                        <div class="flex items-center justify-center space-x-2">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span>Payment Successful!</span>
-                        </div>
-                    `;
-                    checkoutBtn.classList.remove('bg-primary', 'hover:bg-indigo-700');
-                    checkoutBtn.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
-                    
-                    setTimeout(() => {
-                        window.location.href = "/simulate-vps-success";
-                    }, 1500);
-                    
-                } else if (data.payment_session_id) {
+                if (data.payment_session_id) {
                     cashfree.checkout({
                         paymentSessionId: data.payment_session_id,
                         redirectTarget: "_modal"

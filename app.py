@@ -328,14 +328,7 @@ def create_order():
         data = response.json()
     except (requests.exceptions.RequestException, ValueError) as e:
         print(f"Cashfree API error: {e}")
-        # Fallback to simulated payment
-        new_transaction = Transaction(
-            user_id=user_id, order_id=order_id,
-            amount=39865.00, status='SIMULATED'
-        )
-        db.session.add(new_transaction)
-        db.session.commit()
-        return {"payment_session_id": "simulated", "order_id": order_id}
+        return {"error": "Payment gateway unreachable"}, 503
     
     if response.status_code == 200:
         # Save transaction to database
@@ -351,14 +344,7 @@ def create_order():
         return {"payment_session_id": data.get("payment_session_id"), "order_id": order_id}
     else:
         print("Cashfree Error:", data)
-        # Bug 3 Fix: Create DB record even for simulated fallback
-        new_transaction = Transaction(
-            user_id=user_id, order_id=order_id,
-            amount=39865.00, status='SIMULATED'
-        )
-        db.session.add(new_transaction)
-        db.session.commit()
-        return {"payment_session_id": "simulated", "order_id": order_id}
+        return {"error": data.get('message', 'Error creating payment session')}, 400
 
 @app.route('/create-ip-order', methods=['POST'])
 def create_ip_order():
@@ -414,14 +400,7 @@ def create_ip_order():
         data = response.json()
     except (requests.exceptions.RequestException, ValueError) as e:
         print(f"Cashfree IP API error: {e}")
-        # Fallback to simulated payment
-        new_transaction = Transaction(
-            user_id=user_id, order_id=order_id,
-            amount=16856.90, status='SIMULATED'
-        )
-        db.session.add(new_transaction)
-        db.session.commit()
-        return {"payment_session_id": "simulated", "order_id": order_id}
+        return {"error": "Payment gateway unreachable"}, 503
     
     if response.status_code == 200:
         # Save transaction to database
@@ -437,14 +416,7 @@ def create_ip_order():
         return {"payment_session_id": data.get("payment_session_id"), "order_id": order_id}
     else:
         print("Cashfree IP Error:", data)
-        # Bug 4 Fix: Create DB record even for simulated fallback
-        new_transaction = Transaction(
-            user_id=user_id, order_id=order_id,
-            amount=16856.90, status='SIMULATED'
-        )
-        db.session.add(new_transaction)
-        db.session.commit()
-        return {"payment_session_id": "simulated", "order_id": order_id}
+        return {"error": data.get('message', 'Error creating payment session')}, 400
 
 @app.route('/check-order')
 def check_order():
