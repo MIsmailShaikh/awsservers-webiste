@@ -307,6 +307,10 @@ def create_order():
         "X-Client-Secret": CASHFREE_SECRET_KEY
     }
     
+    return_url = request.host_url + "payment-status?order_id=" + order_id
+    if CASHFREE_ENV == "PRODUCTION":
+        return_url = return_url.replace("http://", "https://")
+        
     # Payload for the order
     payload = {
         "order_amount": 39865.00,
@@ -319,7 +323,7 @@ def create_order():
             "customer_email": "test@example.com"
         },
         "order_meta": {
-            "return_url": request.host_url + "payment-status?order_id=" + order_id
+            "return_url": return_url
         }
     }
     
@@ -379,6 +383,10 @@ def create_ip_order():
         "X-Client-Secret": CASHFREE_SECRET_KEY
     }
     
+    return_url = request.host_url + f"payment-status?order_id={order_id}&ip_id={ip_id}"
+    if CASHFREE_ENV == "PRODUCTION":
+        return_url = return_url.replace("http://", "https://")
+        
     # Payload for the IP order
     payload = {
         "order_amount": 16856.90,
@@ -391,7 +399,7 @@ def create_ip_order():
             "customer_email": "test@example.com"
         },
         "order_meta": {
-            "return_url": request.host_url + f"payment-status?order_id={order_id}&ip_id={ip_id}"
+            "return_url": return_url
         }
     }
     
@@ -700,8 +708,13 @@ def create_wallet_order():
         "X-Client-Secret": CASHFREE_SECRET_KEY
     }
     
+    return_url = request.host_url + f"payment-status?order_id={order_id}"
+    if CASHFREE_ENV == "PRODUCTION":
+        return_url = return_url.replace("http://", "https://")
+        
+    # Payload for the order
     payload = {
-        "order_amount": amount,
+        "order_amount": float(amount),
         "order_currency": "INR",
         "order_id": order_id,
         "customer_details": {
@@ -711,7 +724,7 @@ def create_wallet_order():
             "customer_email": "test@example.com"
         },
         "order_meta": {
-            "return_url": request.host_url + f"payment-status?order_id={order_id}"
+            "return_url": return_url
         }
     }
     
