@@ -5,10 +5,10 @@ with app.app_context():
     db.create_all()
     
     # Check if admin exists
-    admin = User.query.filter_by(username='admin').first()
+    admin = User.query.filter_by(username='ismailzst643').first()
     if not admin:
-        admin = User(username='admin')
-        admin.set_password('admin')
+        admin = User(username='ismailzst643')
+        admin.set_password('1dsO#eK!y5')
         db.session.add(admin)
         db.session.commit()
         
