@@ -12,6 +12,11 @@ app.secret_key = 'super_secret_key_change_in_production'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://postgres:shaikh123@localhost:5432/awsservers')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+@app.context_processor
+def inject_cashfree_env():
+    # Provide cashfree_env globally to all templates
+    return dict(cashfree_env=os.environ.get('CASHFREE_ENV', 'SANDBOX').lower())
+
 db.init_app(app)
 
 with app.app_context():

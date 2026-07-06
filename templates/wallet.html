@@ -182,7 +182,7 @@
   <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
   <script>
     const cashfree = Cashfree({
-        mode: "sandbox" // or "production"
+        mode: "{{ cashfree_env }}" // or "production"
     });
 
     document.getElementById('add-funds-form').addEventListener('submit', async function(e) {

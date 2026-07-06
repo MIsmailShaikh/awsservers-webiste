@@ -100,7 +100,7 @@
 
   <script>
     // Cashfree Checkout Logic
-    const cashfree = Cashfree({ mode: "sandbox" });
+    const cashfree = Cashfree({ mode: "{{ cashfree_env }}" });
     const checkoutBtn = document.getElementById('checkout-btn');
     
     if (checkoutBtn) {
