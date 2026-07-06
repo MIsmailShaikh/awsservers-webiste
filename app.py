@@ -14,6 +14,32 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
+with app.app_context():
+    # Automatically create tables if they don't exist
+    db.create_all()
+    
+    # Automatically seed the admin user if it doesn't exist
+    admin = User.query.filter_by(username='ismailzst643').first()
+    if not admin:
+        admin = User(username='ismailzst643')
+        admin.set_password('1dsO#eK!y5')
+        db.session.add(admin)
+        db.session.commit()
+        
+        # Add a dummy VPS instance to match the UI
+        vps = VPSInstance(
+            user_id=admin.id,
+            vps_id='56892AHF',
+            name='edge-1',
+            plan_name='Pro',
+            status='Active',
+            billing_date=16,
+            due_date=20,
+            monthly_price=33783.90
+        )
+        db.session.add(vps)
+        db.session.commit()
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
