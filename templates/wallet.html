@@ -217,7 +217,7 @@
                 // Step 2: Initialize Cashfree Checkout
                 cashfree.checkout({
                     paymentSessionId: data.payment_session_id,
-                    redirectTarget: "_blank"
+                    redirectTarget: "_modal"
                 });
             } else {
                 alert('Error creating order: ' + (data.error || 'Unknown error'));

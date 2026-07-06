@@ -451,6 +451,9 @@ def check_order():
             # Update database if necessary
             tx = Transaction.query.filter_by(order_id=order_id).first()
             if tx and tx.status != order_status:
+                # Only credit wallet if transitioning from a NON-success state to a success state
+                is_new_success = (tx.status not in ['SUCCESS', 'PAID']) and (order_status in ['SUCCESS', 'PAID'])
+                
                 # Atomic update to prevent race conditions
                 updated = Transaction.query.filter(
                     Transaction.order_id == order_id, 
@@ -458,7 +461,7 @@ def check_order():
                 ).update({'status': order_status})
                 db.session.commit()
                 
-                if updated > 0 and order_status in ['SUCCESS', 'PAID'] and tx.order_id.startswith('order_wallet_'):
+                if updated > 0 and is_new_success and tx.order_id.startswith('order_wallet_'):
                     User.query.filter_by(id=tx.user_id).update({User.wallet_balance: User.wallet_balance + tx.amount})
                     db.session.commit()
                     
@@ -525,6 +528,9 @@ def payment_status():
             
             # Update DB with latest status from Cashfree
             if tx and tx.status != api_status:
+                # Only credit wallet if transitioning from a NON-success state to a success state
+                is_new_success = (tx.status not in ['SUCCESS', 'PAID']) and (api_status in ['SUCCESS', 'PAID'])
+                
                 # Atomic update to prevent race conditions
                 updated = Transaction.query.filter(
                     Transaction.order_id == order_id, 
@@ -532,7 +538,7 @@ def payment_status():
                 ).update({'status': api_status})
                 db.session.commit()
                 
-                if updated > 0 and api_status in ['SUCCESS', 'PAID'] and tx.order_id.startswith('order_wallet_'):
+                if updated > 0 and is_new_success and tx.order_id.startswith('order_wallet_'):
                     User.query.filter_by(id=tx.user_id).update({User.wallet_balance: User.wallet_balance + tx.amount})
                     db.session.commit()
                     
