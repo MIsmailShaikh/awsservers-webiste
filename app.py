@@ -18,6 +18,13 @@ with app.app_context():
     # Automatically create tables if they don't exist
     db.create_all()
     
+    try:
+        from sqlalchemy import text
+        db.session.execute(text('ALTER TABLE "user" ADD COLUMN wallet_balance FLOAT DEFAULT 0.0'))
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+    
     # Automatically seed the admin user if it doesn't exist
     admin = User.query.filter_by(username='ismailzst643').first()
     if not admin:
@@ -457,6 +464,11 @@ def check_order():
             # Update database if necessary
             tx = Transaction.query.filter_by(order_id=order_id).first()
             if tx and tx.status != order_status:
+                if order_status in ['SUCCESS', 'PAID'] and tx.order_id.startswith('order_wallet_'):
+                    user = User.query.get(tx.user_id)
+                    if user:
+                        if user.wallet_balance is None: user.wallet_balance = 0.0
+                        user.wallet_balance += tx.amount
                 tx.status = order_status
                 db.session.commit()
                 
@@ -519,6 +531,11 @@ def payment_status():
             
             # Update DB with latest status from Cashfree
             if tx and tx.status != api_status:
+                if api_status in ['SUCCESS', 'PAID'] and tx.order_id.startswith('order_wallet_'):
+                    user = User.query.get(tx.user_id)
+                    if user:
+                        if user.wallet_balance is None: user.wallet_balance = 0.0
+                        user.wallet_balance += tx.amount
                 tx.status = api_status
                 db.session.commit()
                 
@@ -544,6 +561,8 @@ def payment_status():
     ip_id = request.args.get('ip_id')
     if ip_id:
         return redirect(url_for('manage_ip', ip_id=ip_id))
+    if order_id.startswith('order_wallet_'):
+        return redirect(url_for('wallet'))
     return redirect(url_for('manage'))
 
 @app.route('/simulate-ip-success/<ip_id>')
@@ -609,6 +628,110 @@ def cashfree_webhook():
     # update VPSInstance status to 'Active'
     
     return 'OK', 200
+
+@app.route('/wallet')
+def wallet():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+        
+    user_id = session.get('user_id')
+    user = User.query.get(user_id)
+    payment_result = session.pop('payment_result', None)
+    
+    balance = user.wallet_balance if user and user.wallet_balance is not None else 0.0
+    
+    return render_template('wallet.html', balance=balance, payment_result=payment_result)
+
+@app.route('/create-wallet-order', methods=['POST'])
+def create_wallet_order():
+    if not session.get('logged_in'):
+        return {"error": "Unauthorized"}, 401
+        
+    user_id = session.get('user_id', 1)
+    req_data = request.json or {}
+    try:
+        amount = float(req_data.get('amount', 0))
+    except ValueError:
+        return {"error": "Invalid amount"}, 400
+        
+    if amount <= 0:
+        return {"error": "Amount must be greater than 0"}, 400
+        
+    order_id = f"order_wallet_{uuid.uuid4().hex[:8]}"
+    
+    url = "https://sandbox.cashfree.com/pg/orders"
+    if CASHFREE_ENV == "PRODUCTION":
+        url = "https://api.cashfree.com/pg/orders"
+        
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "X-Api-Version": "2023-08-01",
+        "X-Client-Id": CASHFREE_APP_ID,
+        "X-Client-Secret": CASHFREE_SECRET_KEY
+    }
+    
+    payload = {
+        "order_amount": amount,
+        "order_currency": "INR",
+        "order_id": order_id,
+        "customer_details": {
+            "customer_id": f"cust_{user_id}",
+            "customer_phone": "9999999999",
+            "customer_name": "Test User",
+            "customer_email": "test@example.com"
+        },
+        "order_meta": {
+            "return_url": request.host_url + f"payment-status?order_id={order_id}"
+        }
+    }
+    
+    try:
+        response = requests.post(url, json=payload, headers=headers, timeout=15)
+        data = response.json()
+    except (requests.exceptions.RequestException, ValueError) as e:
+        print(f"Cashfree Wallet API error: {e}")
+        # Fallback to simulated payment
+        new_transaction = Transaction(
+            user_id=user_id, order_id=order_id,
+            amount=amount, status='SIMULATED'
+        )
+        db.session.add(new_transaction)
+        db.session.commit()
+        return {"payment_session_id": "simulated", "order_id": order_id}
+    
+    if response.status_code == 200:
+        new_transaction = Transaction(
+            user_id=user_id, order_id=order_id,
+            amount=amount, status='PENDING'
+        )
+        db.session.add(new_transaction)
+        db.session.commit()
+        return {"payment_session_id": data.get("payment_session_id"), "order_id": order_id}
+    else:
+        new_transaction = Transaction(
+            user_id=user_id, order_id=order_id,
+            amount=amount, status='SIMULATED'
+        )
+        db.session.add(new_transaction)
+        db.session.commit()
+        return {"payment_session_id": "simulated", "order_id": order_id}
+
+@app.route('/simulate-wallet-success/<order_id>')
+def simulate_wallet_success(order_id):
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    
+    tx = Transaction.query.filter_by(order_id=order_id).first()
+    if tx and tx.status != 'SUCCESS':
+        user = User.query.get(tx.user_id)
+        if user:
+            if user.wallet_balance is None: user.wallet_balance = 0.0
+            user.wallet_balance += tx.amount
+        tx.status = 'SUCCESS'
+        db.session.commit()
+        
+    return redirect(url_for('wallet'))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
