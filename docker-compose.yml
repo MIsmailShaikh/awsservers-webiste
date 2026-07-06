@@ -11,7 +11,7 @@ services:
       - CASHFREE_SECRET_KEY=${CASHFREE_SECRET_KEY}
       - CASHFREE_ENV=${CASHFREE_ENV}
     # Nginx Proxy Manager handles routing to port 5000 internally
-    command: waitress-serve --threads=32 --port=5000 app:app
+    command: waitress-serve --threads=2 --port=5000 app:app
     networks:
       - zst-gateway
 
