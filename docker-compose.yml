@@ -3,8 +3,8 @@ version: '3.8'
 services:
   web:
     build: .
-    ports:
-      - "8000:5000"
+    container_name: awsservers-web
+    restart: always
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - CASHFREE_APP_ID=${CASHFREE_APP_ID}
@@ -12,3 +12,11 @@ services:
       - CASHFREE_ENV=${CASHFREE_ENV}
     env_file:
       - .env
+    # Nginx Proxy Manager handles routing to port 5000 internally
+    command: waitress-serve --threads=32 --port=5000 app:app
+    networks:
+      - zst-gateway
+
+networks:
+  zst-gateway:
+    external: true
