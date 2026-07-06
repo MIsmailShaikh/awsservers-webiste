@@ -433,6 +433,8 @@ def check_order():
         return {"error": "Missing order_id"}, 400
         
     url = f"https://sandbox.cashfree.com/pg/orders/{order_id}"
+    if CASHFREE_ENV == "PRODUCTION":
+        url = f"https://api.cashfree.com/pg/orders/{order_id}"
     headers = {
         "X-Api-Version": "2023-08-01",
         "X-Client-Id": CASHFREE_APP_ID,
@@ -476,6 +478,8 @@ def payment_status():
     tx = Transaction.query.filter_by(order_id=order_id).first()
     
     url = f"https://sandbox.cashfree.com/pg/orders/{order_id}"
+    if CASHFREE_ENV == "PRODUCTION":
+        url = f"https://api.cashfree.com/pg/orders/{order_id}"
     headers = {
         "X-Api-Version": "2023-08-01",
         "X-Client-Id": CASHFREE_APP_ID,
@@ -498,6 +502,8 @@ def payment_status():
             if api_status == "ACTIVE":
                 try:
                     payments_url = f"https://sandbox.cashfree.com/pg/orders/{order_id}/payments"
+                    if CASHFREE_ENV == "PRODUCTION":
+                        payments_url = f"https://api.cashfree.com/pg/orders/{order_id}/payments"
                     pay_response = requests.get(payments_url, headers=headers, timeout=15)
                     if pay_response.status_code == 200:
                         payments_data = pay_response.json()
