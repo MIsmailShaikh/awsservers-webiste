@@ -623,15 +623,67 @@ def simulate_vps_success():
     
     return redirect(url_for('manage'))
 
+import hmac
+import hashlib
+import base64
+
 @app.route('/cashfree-webhook', methods=['POST'])
 def cashfree_webhook():
-    # In a real app, verify the signature here using x-webhook-signature
-    data = request.json
-    print("Webhook received:", data)
+    timestamp = request.headers.get('x-webhook-timestamp')
+    signature = request.headers.get('x-webhook-signature')
+    raw_body = request.get_data(as_text=True)
     
-    # Example logic: if data['data']['payment']['payment_status'] == 'SUCCESS':
-    # update VPSInstance status to 'Active'
+    if not timestamp or not signature:
+        return {"error": "Missing headers"}, 400
+        
+    # Verify signature
+    message = timestamp + raw_body
+    computed = hmac.new(
+        CASHFREE_SECRET_KEY.encode('utf-8'),
+        message.encode('utf-8'),
+        hashlib.sha256
+    ).digest()
+    computed_b64 = base64.b64encode(computed).decode('utf-8')
     
+    if computed_b64 != signature:
+        print("Webhook signature verification failed.")
+        return {"error": "Invalid signature"}, 401
+        
+    try:
+        data = request.json
+    except Exception:
+        return {"error": "Invalid JSON"}, 400
+        
+    event_type = data.get('type')
+    
+    if event_type == 'PAYMENT_SUCCESS_WEBHOOK':
+        order_data = data.get('data', {}).get('order', {})
+        payment_data = data.get('data', {}).get('payment', {})
+        
+        order_id = order_data.get('order_id')
+        payment_status = payment_data.get('payment_status')
+        
+        if order_id and payment_status in ['SUCCESS', 'PAID']:
+            tx = Transaction.query.filter_by(order_id=order_id).first()
+            if tx and tx.status not in ['SUCCESS', 'PAID']:
+                if order_id.startswith('order_wallet_'):
+                    user = User.query.get(tx.user_id)
+                    if user:
+                        if user.wallet_balance is None: user.wallet_balance = 0.0
+                        user.wallet_balance += tx.amount
+                tx.status = payment_status
+                db.session.commit()
+                print(f"Webhook processed successful payment for order {order_id}")
+                
+    elif event_type in ['PAYMENT_FAILED_WEBHOOK', 'PAYMENT_USER_DROPPED_WEBHOOK']:
+        order_id = data.get('data', {}).get('order', {}).get('order_id')
+        if order_id:
+            tx = Transaction.query.filter_by(order_id=order_id).first()
+            if tx and tx.status not in ['SUCCESS', 'PAID']:
+                tx.status = 'FAILED'
+                db.session.commit()
+                print(f"Webhook processed failed payment for order {order_id}")
+                
     return 'OK', 200
 
 @app.route('/wallet')
