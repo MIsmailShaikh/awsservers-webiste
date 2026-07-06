@@ -625,7 +625,7 @@
                 if (data.payment_session_id) {
                     cashfree.checkout({
                         paymentSessionId: data.payment_session_id,
-                        redirectTarget: "_modal"
+                        redirectTarget: "_blank"
                     }).then(function(result) {
                         if (result.error) {
                             alert("Payment Failed or Cancelled: " + result.error.message);

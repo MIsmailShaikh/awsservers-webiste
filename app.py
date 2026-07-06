@@ -451,14 +451,17 @@ def check_order():
             # Update database if necessary
             tx = Transaction.query.filter_by(order_id=order_id).first()
             if tx and tx.status != order_status:
-                if order_status in ['SUCCESS', 'PAID'] and tx.order_id.startswith('order_wallet_'):
-                    user = User.query.get(tx.user_id)
-                    if user:
-                        if user.wallet_balance is None: user.wallet_balance = 0.0
-                        user.wallet_balance += tx.amount
-                tx.status = order_status
+                # Atomic update to prevent race conditions
+                updated = Transaction.query.filter(
+                    Transaction.order_id == order_id, 
+                    Transaction.status == tx.status
+                ).update({'status': order_status})
                 db.session.commit()
                 
+                if updated > 0 and order_status in ['SUCCESS', 'PAID'] and tx.order_id.startswith('order_wallet_'):
+                    User.query.filter_by(id=tx.user_id).update({User.wallet_balance: User.wallet_balance + tx.amount})
+                    db.session.commit()
+                    
             return {"order_status": order_status}
         return {"error": "Failed to fetch order", "order_status": "UNKNOWN"}, 400
     except (requests.exceptions.RequestException, ValueError) as e:
@@ -522,14 +525,17 @@ def payment_status():
             
             # Update DB with latest status from Cashfree
             if tx and tx.status != api_status:
-                if api_status in ['SUCCESS', 'PAID'] and tx.order_id.startswith('order_wallet_'):
-                    user = User.query.get(tx.user_id)
-                    if user:
-                        if user.wallet_balance is None: user.wallet_balance = 0.0
-                        user.wallet_balance += tx.amount
-                tx.status = api_status
+                # Atomic update to prevent race conditions
+                updated = Transaction.query.filter(
+                    Transaction.order_id == order_id, 
+                    Transaction.status == tx.status
+                ).update({'status': api_status})
                 db.session.commit()
                 
+                if updated > 0 and api_status in ['SUCCESS', 'PAID'] and tx.order_id.startswith('order_wallet_'):
+                    User.query.filter_by(id=tx.user_id).update({User.wallet_balance: User.wallet_balance + tx.amount})
+                    db.session.commit()
+                    
     except (requests.exceptions.RequestException, ValueError) as e:
         print(f"Cashfree payment-status error: {e}")
         # Fallback: use whatever status is in the database
@@ -652,13 +658,16 @@ def cashfree_webhook():
         if order_id and payment_status in ['SUCCESS', 'PAID']:
             tx = Transaction.query.filter_by(order_id=order_id).first()
             if tx and tx.status not in ['SUCCESS', 'PAID']:
-                if order_id.startswith('order_wallet_'):
-                    user = User.query.get(tx.user_id)
-                    if user:
-                        if user.wallet_balance is None: user.wallet_balance = 0.0
-                        user.wallet_balance += tx.amount
-                tx.status = payment_status
+                # Atomic update to prevent race conditions
+                updated = Transaction.query.filter(
+                    Transaction.order_id == order_id, 
+                    Transaction.status == tx.status
+                ).update({'status': payment_status})
                 db.session.commit()
+                
+                if updated > 0 and order_id.startswith('order_wallet_'):
+                    User.query.filter_by(id=tx.user_id).update({User.wallet_balance: User.wallet_balance + tx.amount})
+                    db.session.commit()
                 print(f"Webhook processed successful payment for order {order_id}")
                 
     elif event_type in ['PAYMENT_FAILED_WEBHOOK', 'PAYMENT_USER_DROPPED_WEBHOOK']:

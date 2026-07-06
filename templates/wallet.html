@@ -215,11 +215,10 @@
             
             if (response.ok && data.payment_session_id) {
                 // Step 2: Initialize Cashfree Checkout
-                let checkoutOptions = {
+                cashfree.checkout({
                     paymentSessionId: data.payment_session_id,
-                    redirectTarget: "_self" 
-                };
-                cashfree.checkout(checkoutOptions);
+                    redirectTarget: "_blank"
+                });
             } else {
                 alert('Error creating order: ' + (data.error || 'Unknown error'));
                 btn.innerHTML = originalText;
