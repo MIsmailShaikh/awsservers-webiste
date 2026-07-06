@@ -214,17 +214,12 @@
             const data = await response.json();
             
             if (response.ok && data.payment_session_id) {
-                if (data.payment_session_id === "simulated") {
-                    // Simulating a successful payment in sandbox
-                    window.location.href = `/simulate-wallet-success/${data.order_id}`;
-                } else {
-                    // Step 2: Initialize Cashfree Checkout
-                    let checkoutOptions = {
-                        paymentSessionId: data.payment_session_id,
-                        redirectTarget: "_self" 
-                    };
-                    cashfree.checkout(checkoutOptions);
-                }
+                // Step 2: Initialize Cashfree Checkout
+                let checkoutOptions = {
+                    paymentSessionId: data.payment_session_id,
+                    redirectTarget: "_self" 
+                };
+                cashfree.checkout(checkoutOptions);
             } else {
                 alert('Error creating order: ' + (data.error || 'Unknown error'));
                 btn.innerHTML = originalText;

@@ -748,14 +748,7 @@ def create_wallet_order():
         data = response.json()
     except (requests.exceptions.RequestException, ValueError) as e:
         print(f"Cashfree Wallet API error: {e}")
-        # Fallback to simulated payment
-        new_transaction = Transaction(
-            user_id=user_id, order_id=order_id,
-            amount=amount, status='SIMULATED'
-        )
-        db.session.add(new_transaction)
-        db.session.commit()
-        return {"payment_session_id": "simulated", "order_id": order_id}
+        return {"error": "Payment gateway unreachable"}, 503
     
     if response.status_code == 200:
         new_transaction = Transaction(
@@ -766,13 +759,8 @@ def create_wallet_order():
         db.session.commit()
         return {"payment_session_id": data.get("payment_session_id"), "order_id": order_id}
     else:
-        new_transaction = Transaction(
-            user_id=user_id, order_id=order_id,
-            amount=amount, status='SIMULATED'
-        )
-        db.session.add(new_transaction)
-        db.session.commit()
-        return {"payment_session_id": "simulated", "order_id": order_id}
+        print("Cashfree Wallet Error:", data)
+        return {"error": data.get('message', 'Error creating payment session')}, 400
 
 @app.route('/simulate-wallet-success/<order_id>')
 def simulate_wallet_success(order_id):
