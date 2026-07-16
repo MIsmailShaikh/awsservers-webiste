@@ -124,6 +124,26 @@ def transactions():
     
     return render_template('transactions.html', transactions=user_transactions)
 
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
+
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+
+@app.route('/refunds')
+def refunds():
+    return render_template('refunds.html')
+
+@app.route('/pricing')
+def pricing():
+    return render_template('pricing.html')
+
 from datetime import datetime, timedelta
 import calendar
 

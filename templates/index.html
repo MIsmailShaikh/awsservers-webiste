@@ -119,7 +119,7 @@
           <a id="nav-home" class="rounded-md px-3 py-2 text-muted hover:bg-slate-100 hover:text-slate-900"
             href="#home">Home</a>
           <a id="nav-pricing" class="rounded-md px-3 py-2 text-muted hover:bg-slate-100 hover:text-slate-900"
-            href="#pricing">Pricing</a>
+            href="/pricing">Pricing</a>
           <a id="nav-features" class="rounded-md px-3 py-2 text-muted hover:bg-slate-100 hover:text-slate-900"
             href="#features">Features</a>
           <a id="nav-faq" class="rounded-md px-3 py-2 text-muted hover:bg-slate-100 hover:text-slate-900"
@@ -140,7 +140,7 @@
       The easiest way to <span class="text-gradient">power your business</span>
     </h1>
     <p class="mx-auto mt-6 max-w-2xl text-lg text-muted">
-      Enterprise-grade NVMe VPS hosting engineered for maximum performance, rock-solid reliability, and zero downtime. Deploy your infrastructure globally in seconds.
+      AWSServers provides managed VPS and cloud server hosting services for businesses in India. We offer monthly plans in Indian Rupees (INR) with 24×7 technical support. We provide hosting and management services only, and we do not sell Amazon Web Services (AWS) accounts, credits, or any prohibited services.
     </p>
     <div class="mt-8 flex flex-wrap justify-center gap-3">
       <a id="hero-btn-claim-deal" href="#features"
@@ -281,6 +281,16 @@
     </div>
   </section>
 
+  <!-- Pricing -->
+  <section id="pricing" class="mx-auto max-w-7xl px-6 py-24">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold md:text-5xl text-slate-900">Simple, transparent pricing</h2>
+      <p class="mt-4 text-lg text-slate-600">No hidden fees. Cancel anytime.</p>
+    </div>
+    <div id="pricing-grid" class="grid gap-8 md:grid-cols-3 max-w-5xl mx-auto"></div>
+    <p class="mt-8 text-center text-sm text-slate-500">Prices are shown in Indian Rupees (INR).</p>
+  </section>
+
   <!-- Features Carousel -->
   <section id="features" class="w-full bg-white py-24 border-t border-slate-200">
     <div class="mx-auto max-w-[1400px] px-6 mb-10">
@@ -363,11 +373,29 @@
     </div>
   </section>
 
+  <!-- Legal & Compliance -->
+  <section class="mx-auto max-w-7xl px-6 py-12">
+    <div class="rounded-xl bg-slate-100 p-8 text-sm text-slate-700">
+      <h3 class="text-lg font-bold text-slate-900 mb-4">Legal & Compliance</h3>
+      <p class="mb-2">AWSServers is a brand operated by AWSservers, registered in India.</p>
+      <p class="mb-2">We issue proper invoices for all payments and retain required KYC and billing records as per Indian regulations.</p>
+      <p>Our services and policies are designed to follow the guidelines of Indian payment gateways and the Reserve Bank of India (RBI).</p>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="border-t border-slate-200 bg-slate-50">
-    <div class="mx-auto max-w-7xl px-6 py-10 text-sm text-muted flex flex-col md:flex-row justify-between gap-4">
-      <p>© <span id="year"></span> AWSServers. All rights reserved.</p>
-      <p>Payments secured by Cashfree.</p>
+    <div class="mx-auto max-w-7xl px-6 py-10 flex flex-col gap-6">
+      <div class="flex flex-wrap gap-x-8 gap-y-4 text-sm font-medium text-slate-700">
+        <a href="/contact" class="hover:text-primary">Contact Us</a>
+        <a href="/terms" class="hover:text-primary">Terms & Conditions</a>
+        <a href="/privacy" class="hover:text-primary">Privacy Policy</a>
+        <a href="/refunds" class="hover:text-primary">Refunds & Cancellations</a>
+      </div>
+      <div class="text-xs text-muted flex flex-col md:flex-row justify-between gap-4 border-t border-slate-200 pt-6">
+        <p>© <span id="year"></span> AWSServers. Operated by AWSservers, registered in India.</p>
+        <p>Online payments are processed through RBI-regulated payment gateways. KYC and compliance checks may apply. Payments secured by Cashfree.</p>
+      </div>
     </div>
   </footer>
 

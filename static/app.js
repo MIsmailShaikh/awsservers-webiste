@@ -5,24 +5,24 @@ const CASHFREE_MODE = "sandbox"; // "sandbox" | "production"
 
 const PLANS = [
   {
-    id: "starter", name: "Starter",
-    tagline: "Perfect for personal projects and low-traffic sites.",
-    priceMonthly: 499, originalPriceMonthly: 1249, badge: "SAVE 60%", freeMonths: 3,
-    features: ["2 vCPU","4 GB RAM","50 GB NVMe SSD","4 TB Bandwidth","Full root access","Free SSL & DDoS shield","24/7 chat support"],
-    paymentSessionId: "", // paste Cashfree payment_session_id
+    id: "pro", name: "Pro",
+    tagline: "High-performance compute for growing applications.",
+    priceMonthly: 19999, originalPriceMonthly: 25000, badge: "SAVE 20%", freeMonths: 0,
+    features: ["32 vCPU AMD EPYC","128 GB DDR4 RAM","2 TB NVMe SSD","10 TB Bandwidth","Daily snapshots","Enterprise DDoS shield","Priority 24/7 support"],
+    paymentSessionId: "", 
   },
   {
-    id: "pro", name: "Pro", highlight: true,
-    tagline: "Best for growing SaaS, game servers, and dev teams.",
-    priceMonthly: 999, originalPriceMonthly: 2799, badge: "SAVE 65%", freeMonths: 3,
-    features: ["4 vCPU","8 GB RAM","100 GB NVMe SSD","8 TB Bandwidth","Daily snapshots","Advanced DDoS protection","Priority 24/7 support"],
+    id: "enterprise", name: "Enterprise", highlight: true,
+    tagline: "Serious compute for high-traffic apps and critical workloads.",
+    priceMonthly: 39865, originalPriceMonthly: 49999, badge: "FULLY MANAGED", freeMonths: 0,
+    features: ["64 vCPU AMD EPYC","256 GB DDR4 RAM","4 TB NVMe SSD","Unmetered bandwidth","Hourly snapshots","99.99% uptime SLA","Dedicated manager"],
     paymentSessionId: "",
   },
   {
-    id: "business", name: "Business",
-    tagline: "Serious compute for high-traffic apps and workloads.",
-    priceMonthly: 1999, originalPriceMonthly: 4999, badge: "SAVE 60%", freeMonths: 3,
-    features: ["8 vCPU","16 GB RAM","200 GB NVMe SSD","Unmetered bandwidth","Hourly snapshots","99.99% uptime SLA","Dedicated manager"],
+    id: "elite", name: "Elite",
+    tagline: "Massive scale and performance for the largest databases.",
+    priceMonthly: 79999, originalPriceMonthly: 99999, badge: "SAVE 20%", freeMonths: 0,
+    features: ["128 vCPU AMD EPYC","512 GB DDR4 RAM","8 TB NVMe SSD","Unmetered bandwidth","Real-time replication","100% uptime SLA","White-glove support"],
     paymentSessionId: "",
   },
 ];
@@ -86,7 +86,7 @@ if (pg) {
     <p class="mt-1 text-sm text-muted">${p.tagline}</p>
     <div class="mt-6 flex items-baseline gap-2">
       <span class="text-5xl font-bold">₹${p.priceMonthly}</span>
-      <span class="text-muted">/mo</span>
+      <span class="text-muted">/month</span>
     </div>
     <div class="mt-1 flex items-center gap-2 text-sm">
       <span class="line-through text-muted">₹${p.originalPriceMonthly}</span>
@@ -106,7 +106,8 @@ if (pg) {
 
 // ------------------ Render FAQ ------------------
 const fl = document.getElementById("faq-list");
-fl.innerHTML = FAQS.map((f,i) => `
+if (fl) {
+  fl.innerHTML = FAQS.map((f,i) => `
   <details id="faq-item-${i}" class="group p-5" ${i===0?'open':''}>
     <summary id="faq-summary-${i}" class="flex cursor-pointer list-none items-center justify-between font-semibold">
       ${f.q}
@@ -114,8 +115,10 @@ fl.innerHTML = FAQS.map((f,i) => `
     </summary>
     <p class="mt-3 text-sm text-muted">${f.a}</p>
   </details>`).join("");
+}
 
-document.getElementById("year").textContent = new Date().getFullYear();
+const yearEl = document.getElementById("year");
+if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 // ------------------ Cashfree checkout ------------------
 document.querySelectorAll("button.buy").forEach(btn => {
