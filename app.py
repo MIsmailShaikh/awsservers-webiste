@@ -83,13 +83,29 @@ def manage():
     user_id = session.get('user_id')
     latest_tx = Transaction.query.filter_by(user_id=user_id, amount=39865.00).order_by(Transaction.created_at.desc()).first()
     
+    from datetime import datetime, timedelta
+    now = datetime.utcnow()
+    due_date = now.replace(day=20, hour=0, minute=0, second=0, microsecond=0)
+    
+    if now > due_date:
+        if now.month == 12:
+            due_date = due_date.replace(year=now.year + 1, month=1)
+        else:
+            due_date = due_date.replace(month=now.month + 1)
+            
+    gen_date = due_date - timedelta(days=4)
+    
     is_paid = False
     is_pending = False
-    if latest_tx:
-        if latest_tx.status in ['SUCCESS', 'PAID', 'SIMULATED']:
-            is_paid = True
-        elif latest_tx.status == 'PENDING':
-            is_pending = True
+    
+    if now < gen_date:
+        is_paid = True
+    else:
+        if latest_tx and latest_tx.created_at >= gen_date:
+            if latest_tx.status in ['SUCCESS', 'PAID', 'SIMULATED']:
+                is_paid = True
+            elif latest_tx.status == 'PENDING':
+                is_pending = True
     
     # Check for payment result flash from redirect
     payment_result = session.pop('payment_result', None)
@@ -175,7 +191,7 @@ def get_static_ips():
             "pointed_to": "Assigned to VPS: 56892AHF"
         },
         {
-            "id": "56892AHF", 
+            "id": "8547JW4", 
             "address": "72.60.220.68",
             "due_date": due_20,
             "gen_date": gen_20,
