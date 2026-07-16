@@ -7,8 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
-  <script>
+    <script>
     tailwind.config = {
       theme: {
         extend: {
@@ -593,7 +592,7 @@
     }
 
     // Cashfree Checkout Logic
-    const cashfree = Cashfree({ mode: "{{ cashfree_env }}" });
+    
     const checkoutBtn = document.getElementById('checkout-btn');
     
     if (checkoutBtn) {
@@ -613,20 +612,7 @@
                     return;
                 }
                 if (data.payment_session_id) {
-                    cashfree.checkout({
-                        paymentSessionId: data.payment_session_id,
-                        redirectTarget: "_modal"
-                    }).then(function(result) {
-                        if (result.error) {
-                            alert("Payment Failed or Cancelled: " + result.error.message);
-                            checkoutBtn.disabled = false;
-                            checkoutBtn.innerText = 'Complete Payment';
-                        } else if (result.paymentDetails) {
-                            // Payment was completed in the modal! 
-                            // Let the backend verify it and redirect back here with a banner.
-                            window.location.href = '/payment-status?order_id=' + data.order_id;
-                        }
-                    });
+                    alert("Payment system under maintenance. Please contact support.");
                 } else {
                     alert('Error creating order: ' + JSON.stringify(data));
                     checkoutBtn.disabled = false;

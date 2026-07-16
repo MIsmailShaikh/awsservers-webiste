@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Renew Static IP - AVPSSERVER</title> <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/avpsserverlogo.png') }}" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
-  <style>
+    <style>
     :root {
       --primary: #6366f1;
     }
@@ -100,7 +99,7 @@
 
   <script>
     // Cashfree Checkout Logic
-    const cashfree = Cashfree({ mode: "{{ cashfree_env }}" });
+    
     const checkoutBtn = document.getElementById('checkout-btn');
     
     if (checkoutBtn) {
@@ -127,20 +126,7 @@
                 }
 
                 if (data.payment_session_id) {
-                    cashfree.checkout({
-                        paymentSessionId: data.payment_session_id,
-                        redirectTarget: "_modal"
-                    }).then(function(result) {
-                        if (result.error) {
-                            alert("Payment Failed or Cancelled: " + result.error.message);
-                            checkoutBtn.disabled = false;
-                            checkoutBtn.innerText = 'Complete Payment';
-                        } else if (result.paymentDetails) {
-                            // Payment was completed in the modal!
-                            // Redirect to payment status route to verify and redirect with banner.
-                            window.location.href = '/payment-status?order_id=' + data.order_id + '&ip_id={{ ip_id }}';
-                        }
-                    });
+                    alert("Payment system under maintenance. Please contact support.");
                 }
             } catch (error) {
                 console.error("Error creating order:", error);

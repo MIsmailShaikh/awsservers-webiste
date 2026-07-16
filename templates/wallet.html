@@ -143,7 +143,7 @@
         <!-- Add Funds Card -->
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 lg:p-8">
             <h3 class="text-lg font-bold text-slate-900 mb-2">Add Funds to Wallet</h3>
-            <p class="text-sm text-slate-500 mb-6">Enter the amount you would like to add to your wallet balance. Payments are processed securely via Cashfree.</p>
+            <p class="text-sm text-slate-500 mb-6">Enter the amount you would like to add to your wallet balance.</p>
             
             <form id="add-funds-form" class="space-y-4">
                 <div>
@@ -169,11 +169,8 @@
     </div>
   </main>
 
-  <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
-  <script>
-    const cashfree = Cashfree({
-        mode: "{{ cashfree_env }}" // or "production"
-    });
+    <script>
+    
 
     document.getElementById('add-funds-form').addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -205,10 +202,7 @@
             
             if (response.ok && data.payment_session_id) {
                 // Step 2: Initialize Cashfree Checkout
-                cashfree.checkout({
-                    paymentSessionId: data.payment_session_id,
-                    redirectTarget: "_modal"
-                });
+                alert("Payment system under maintenance. Please contact support.");
             } else {
                 alert('Error creating order: ' + (data.error || 'Unknown error'));
                 btn.innerHTML = originalText;

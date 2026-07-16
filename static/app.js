@@ -1,7 +1,6 @@
 // ============================================================
-// NovaVPS — plain JS. Configure Cashfree below.
+// AVPSSERVER — plain JS.
 // ============================================================
-const CASHFREE_MODE = "sandbox"; // "sandbox" | "production"
 
 const PLANS = [
   {
@@ -38,7 +37,7 @@ const FEATURES = [
 
 const FAQS = [
   { q: "How fast can I deploy a VPS?", a: "Most servers boot in under 60 seconds. Choose an OS, region, and plan — you'll get SSH access as soon as provisioning completes." },
-  { q: "Which payment methods do you accept?", a: "Checkout is powered by Cashfree — UPI, credit/debit cards, net banking, and popular wallets." },
+  { q: "Which payment methods do you accept?", a: "UPI, credit/debit cards, net banking, and popular wallets." },
   { q: "Can I upgrade my plan later?", a: "Yes. Upgrades take a few minutes and require a quick reboot. Downgrades apply on the next billing cycle." },
   { q: "Do you offer refunds?", a: "30-day money-back guarantee on all VPS plans. If something isn't right, reach out and we'll make it good." },
   { q: "Is there an SLA?", a: "Every plan ships with 99.9% uptime SLA. Business tier steps up to 99.99% with service credits when we miss." },
