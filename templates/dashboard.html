@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dashboard — AVPSSERVER</title>
+  <title>Dashboard — AVPSSERVER</title> <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/avpsserverlogo.png') }}" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="/static/app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -30,7 +30,7 @@
   <aside class="w-64 bg-white border-r border-slate-200 h-full flex flex-col hidden md:flex shrink-0">
     <!-- Logo -->
     <div class="h-16 flex items-center px-6 border-b border-slate-200">
-      <a href="/" class="flex items-center gap-2 font-display text-lg font-bold"> <img src="{{ url_for('static', filename='images/avpsserverlogo.png') }}" alt="AVPSSERVER Logo" class="h-8 w-auto"> </a>
+      <a href="/" class="flex items-center gap-2 font-display text-lg font-bold"> <img src="{{ url_for('static', filename='images/avpsserverlogo.png') }}" alt="AVPSSERVER Logo" class="h-8 w-auto"><span class="bg-gradient-to-r from-primary to-glow text-transparent bg-clip-text ml-1">AVPSSERVER</span></a>
     </div>
     
     <!-- Nav Links -->
