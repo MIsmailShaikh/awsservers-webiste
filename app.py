@@ -109,8 +109,10 @@ def manage():
     
     # Check for payment result flash from redirect
     payment_result = session.pop('payment_result', None)
+    
+    expiration_date = due_date.strftime('%Y-%m-%d')
         
-    return render_template('manage.html', is_paid=is_paid, is_pending=is_pending, payment_result=payment_result)
+    return render_template('manage.html', is_paid=is_paid, is_pending=is_pending, payment_result=payment_result, expiration_date=expiration_date)
 
 @app.route('/transactions')
 def transactions():
@@ -125,7 +127,7 @@ def transactions():
 from datetime import datetime, timedelta
 import calendar
 
-def get_next_dates(day):
+def get_next_dates(day, gen_offset=4, upcoming_offset=8):
     now = datetime.now()
     try:
         due_date = now.replace(day=day)
@@ -147,8 +149,8 @@ def get_next_dates(day):
             last_day = calendar.monthrange(new_year, new_month)[1]
             due_date = due_date.replace(year=new_year, month=new_month, day=last_day)
             
-    gen_date = due_date - timedelta(days=4)
-    upcoming_date = due_date - timedelta(days=8)
+    gen_date = due_date - timedelta(days=gen_offset)
+    upcoming_date = due_date - timedelta(days=upcoming_offset)
     
     if now >= gen_date:
         bill_status = "Unpaid"
@@ -165,7 +167,7 @@ def get_next_dates(day):
 def get_static_ips():
     due_6, gen_6, pay_6, status_6 = get_next_dates(6)
     due_23, gen_23, pay_23, status_23 = get_next_dates(23)
-    due_20, gen_20, pay_20, status_20 = get_next_dates(20)
+    due_18, gen_18, pay_18, status_18 = get_next_dates(18, gen_offset=2)
     
     ips = [
         {
@@ -193,13 +195,13 @@ def get_static_ips():
         {
             "id": "8547JW4", 
             "address": "72.60.220.68",
-            "due_date": due_20,
-            "gen_date": gen_20,
-            "can_pay": pay_20,
+            "due_date": due_18,
+            "gen_date": gen_18,
+            "can_pay": pay_18,
             "type": "Static IP",
             "is_reserved": False,
             "included": "Assigned to VPS",
-            "bill_status": status_20,
+            "bill_status": status_18,
             "pointed_to": "Assigned to VPS: 56892AHF"
         },
         {
@@ -276,8 +278,28 @@ def checkout_ip(ip_id):
     if not session.get('logged_in'):
         return redirect(url_for('login'))
         
-    expiration_date = "2026-03-06"
-    return render_template('ip-checkout.html', ip_id=ip_id, expiration_date=expiration_date)
+    ips = get_static_ips()
+    ip_data = next((ip for ip in ips if ip['id'] == ip_id), None)
+    
+    expiration_date = "2026-07-20"
+    if ip_data:
+        from datetime import datetime
+        try:
+            parsed_date = datetime.strptime(ip_data['due_date'], "%d %b %Y")
+            expiration_date = parsed_date.strftime("%Y-%m-%d")
+        except ValueError:
+            pass
+
+    if ip_data and ip_data['id'] == '8547JW4':
+        base_amount = "13,966.95"
+        tax_amount = "2,514.05"
+        total_amount = "16,481.00"
+    else:
+        base_amount = "14,285.52"
+        tax_amount = "2,571.38"
+        total_amount = "16,856.90"
+
+    return render_template('ip-checkout.html', ip_id=ip_id, expiration_date=expiration_date, base_amount=base_amount, tax_amount=tax_amount, total_amount=total_amount)
 
 @app.route('/logout')
 def logout():
@@ -403,9 +425,11 @@ def create_ip_order():
     if CASHFREE_ENV == "PRODUCTION":
         return_url = return_url.replace("http://", "https://")
         
+    order_amount = 16481.00 if ip_id == "8547JW4" else 16856.90
+    
     # Payload for the IP order
     payload = {
-        "order_amount": 16856.90,
+        "order_amount": order_amount,
         "order_currency": "INR",
         "order_id": order_id,
         "customer_details": {
@@ -431,7 +455,7 @@ def create_ip_order():
         new_transaction = Transaction(
             user_id=user_id,
             order_id=order_id,
-            amount=16856.90,
+            amount=order_amount,
             status='PENDING'
         )
         db.session.add(new_transaction)
@@ -603,10 +627,12 @@ def simulate_ip_success(ip_id):
         db.session.commit()
     else:
         # No transaction exists yet (edge case) — create one
+        order_amount = 16481.00 if ip_id == "8547JW4" else 16856.90
+        
         new_tx = Transaction(
             user_id=user_id,
             order_id=f'order_ip_{ip_id}_sim{uuid.uuid4().hex[:4]}',
-            amount=16856.90,
+            amount=order_amount,
             status='SUCCESS'
         )
         db.session.add(new_tx)

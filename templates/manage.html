@@ -553,7 +553,7 @@
         <div class="bg-slate-50 rounded-xl p-6">
           <div class="flex justify-between items-center mb-4">
             <span class="text-[14px] text-slate-600">Expiration date</span>
-            <span id="dynamic-expiration-date" class="text-[14px] font-semibold text-slate-900"></span>
+            <span id="dynamic-expiration-date" class="text-[14px] font-semibold text-slate-900">{{ expiration_date }}</span>
           </div>
           
           <div class="flex justify-between items-center mb-4">
@@ -682,26 +682,7 @@
         }
       }
       
-      // Calculate dynamic expiration date
-      const currentDate = new Date();
-      let expYear = currentDate.getFullYear();
-      let expMonth = currentDate.getMonth();
-      
-      if (today >= 16) {
-          expMonth += 1;
-          if (expMonth > 11) {
-              expMonth = 0;
-              expYear += 1;
-          }
-      }
-      
-      // Format as YYYY-MM-DD
-      const formattedMonth = String(expMonth + 1).padStart(2, '0');
-      const expirationDateStr = `${expYear}-${formattedMonth}-20`;
-      
-      if (expirationDateEl) {
-          expirationDateEl.innerText = expirationDateStr;
-      }
+      // We now use the expiration_date passed from the backend template.
     }
     updateBillingStatus();
 
