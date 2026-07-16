@@ -150,13 +150,13 @@ document.querySelectorAll("button.buy").forEach(btn => {
 
 // ------------------ Terminal Animation ------------------
 const terminalCommands = [
-  { text: "$ aws deploy --plan pro --region blr1 --os ubuntu-24.04", type: "cmd" },
+  { text: "$ avps deploy --plan pro --region blr1 --os ubuntu-24.04", type: "cmd" },
   { text: "✓ Provisioning 4 vCPU · 8 GB RAM · 100 GB NVMe", type: "out", delay: 800 },
   { text: "✓ Attaching dedicated IPv4 · enabling DDoS shield", type: "out", delay: 600 },
   { text: "✓ Boot completed in 41s", type: "out", delay: 1000 },
   { text: "", type: "out", delay: 200 },
   { text: "  ssh root@203.0.113.42", type: "out", delay: 100 },
-  { text: "  https://console.awsservers.io/servers/edge-1", type: "out", delay: 100 }
+  { text: "  https://console.AVPSSERVER.io/servers/edge-1", type: "out", delay: 100 }
 ];
 
 async function typeTerminal() {

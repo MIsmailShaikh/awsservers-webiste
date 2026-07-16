@@ -140,6 +140,10 @@ def privacy():
 def refunds():
     return render_template('refunds.html')
 
+@app.route('/shipping')
+def shipping():
+    return render_template('shipping.html')
+
 @app.route('/pricing')
 def pricing():
     return render_template('pricing.html')

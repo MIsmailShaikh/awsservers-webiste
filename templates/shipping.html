@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shipping & Delivery Policy — AVPSSERVER</title>
+  <meta name="description" content="Shipping & Delivery Policy for AVPSSERVER hosting." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            display: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            bg: '#f8fafc',
+            card: '#ffffff',
+            primary: '#673de7',
+            glow: '#a06bff',
+            mint: '#7ef0d2',
+            muted: '#64748b',
+          },
+          boxShadow: {
+            glow: '0 30px 90px -25px rgba(103,61,231,0.65)',
+            elegant: '0 12px 40px -12px rgba(160,107,255,0.45)',
+          },
+          backgroundImage: {
+            hero: 'linear-gradient(135deg,#673de7 0%,#a06bff 60%,#e879f9 100%)',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-bg text-slate-900 antialiased font-sans flex flex-col min-h-screen">
+  <!-- Header -->
+  <header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 backdrop-blur-md">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+      <div class="flex items-center gap-8">
+        <a href="/" class="flex items-center gap-2 font-display text-xl font-bold tracking-tight text-slate-900">
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-hero text-white shadow-glow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><path d="M6 8h.01"></path><path d="M10 8h.01"></path><path d="M6 16h.01"></path><path d="M10 16h.01"></path><path d="M2 12h20"></path></svg>
+          </span>
+          AVPSSERVER
+        </a>
+        <nav class="hidden md:flex items-center gap-1 text-sm">
+          <a class="rounded-md px-3 py-2 text-muted hover:bg-slate-100 hover:text-slate-900" href="/">Home</a>
+          <a class="rounded-md px-3 py-2 text-muted hover:bg-slate-100 hover:text-slate-900" href="/pricing">Pricing</a>
+        </nav>
+      </div>
+      <div class="hidden sm:flex items-center gap-5">
+        <a href="/" class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors">Log in</a>
+        <a href="/pricing" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-slate-800 transition-colors">Get started</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow mx-auto max-w-4xl px-6 py-20">
+    <h1 class="text-4xl font-bold text-slate-900 mb-8 font-display">Shipping & Delivery Policy</h1>
+    
+    <div class="prose prose-slate max-w-none text-slate-700">
+      <p class="mb-4">Since AVPSSERVER provides digital hosting services and virtual private servers, we do not ship physical products.</p>
+      
+      <h3 class="text-xl font-bold text-slate-900 mt-8 mb-4">Delivery of Virtual Resources</h3>
+      <p class="mb-4">Your VPS or hosting plan will be provisioned automatically and details will be delivered digitally via the email address registered to your account upon successful payment.</p>
+      
+      <h3 class="text-xl font-bold text-slate-900 mt-8 mb-4">Timelines</h3>
+      <p class="mb-4">Standard VPS deployment typically completes within 5-10 minutes of payment confirmation. In rare cases where manual review or KYC verification is required, deployment may take up to 24 hours.</p>
+
+      <p class="mt-8">If you have any questions about your order, please reach out to us at <a href="mailto:support@avpsserver.in" class="text-primary hover:underline">support@avpsserver.in</a>.</p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 bg-slate-50 mt-12">
+    <div class="mx-auto max-w-7xl px-6 py-10 flex flex-col gap-6">
+      <div class="flex flex-wrap gap-x-8 gap-y-4 text-sm font-medium text-slate-700">
+        <a href="/contact" class="hover:text-primary">Contact Us</a>
+        <a href="/terms" class="hover:text-primary">Terms & Conditions</a>
+        <a href="/privacy" class="hover:text-primary">Privacy Policy</a>
+        <a href="/refunds" class="hover:text-primary">Refund & Cancellation Policy</a>
+        <a href="/shipping" class="hover:text-primary">Shipping & Delivery Policy</a>
+      </div>
+      <div class="text-xs text-muted flex flex-col md:flex-row justify-between gap-4 border-t border-slate-200 pt-6">
+        <div>
+          <p>© 2026 AVPSSERVER. All rights reserved.</p>
+          <p class="mt-1">#991, Kalyan Giri, Azeez Sait Nagar, Mysuru, Karnataka - 570019</p>
+        </div>
+        <div class="md:text-right">
+          <p>Online payments are processed through RBI-regulated payment gateways. KYC and compliance checks may apply. Payments secured by Cashfree.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
