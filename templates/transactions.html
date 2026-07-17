@@ -119,16 +119,21 @@
             <thead>
               <tr class="bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
                 <th class="px-6 py-4 font-bold">Date</th>
+                <th class="px-6 py-4 font-bold">Description</th>
                 <th class="px-6 py-4 font-bold">Order ID</th>
                 <th class="px-6 py-4 font-bold">Amount</th>
                 <th class="px-6 py-4 font-bold">Status</th>
+                <th class="px-6 py-4 font-bold text-right">Invoice</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 text-sm">
               {% for tx in transactions %}
               <tr class="hover:bg-slate-50/50 transition-colors">
                 <td class="px-6 py-4 whitespace-nowrap text-slate-600 font-medium">
-                  {{ tx.created_at.strftime('%Y-%m-%d %H:%M') }}
+                  {{ (tx.created_at | to_ist).strftime('%Y-%m-%d %I:%M %p') }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-slate-800 font-medium">
+                  {{ tx.description or 'N/A' }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span class="font-mono text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-md">{{ tx.order_id }}</span>
@@ -152,6 +157,14 @@
                       <span class="w-2 h-2 rounded-full mr-1.5 bg-red-500"></span>
                       Failed
                     </div>
+                  {% endif %}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  {% if tx.status == 'SUCCESS' or tx.status == 'PAID' %}
+                    <a href="/download-invoice/{{ tx.order_id }}" target="_blank" class="text-primary hover:text-indigo-900 inline-flex items-center gap-1">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                      Invoice
+                    </a>
                   {% endif %}
                 </td>
               </tr>

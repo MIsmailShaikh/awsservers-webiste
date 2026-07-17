@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -34,7 +34,7 @@
               </td>
               <td>
                 Invoice #: {{ tx.order_id }}<br>
-                Created: {{ tx.created_at.strftime('%B %d, %Y') }}<br>
+                Created: {{ (tx.created_at | to_ist).strftime('%B %d, %Y at %I:%M %p') }} (IST)<br>
                 Status: <strong style="color: #10b981;">PAID</strong>
               </td>
             </tr>
@@ -66,9 +66,13 @@
         <td>Description</td>
         <td>Amount</td>
       </tr>
-      <tr class="item last">
+      <tr class="item">
         <td>Cloud Infrastructure Services ({{ tx.order_id }})</td>
-        <td>₹{{ "{:,.2f}".format(tx.amount) }}</td>
+        <td>₹{{ "{:,.2f}".format(tx.amount / 1.18) }}</td>
+      </tr>
+      <tr class="item last">
+        <td>Taxes & Fees (18% GST)</td>
+        <td>₹{{ "{:,.2f}".format(tx.amount - (tx.amount / 1.18)) }}</td>
       </tr>
       <tr class="total">
         <td></td>

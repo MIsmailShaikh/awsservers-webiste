@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime
 import calendar
-from models import db, User, VPSInstance, Transaction
+from models import db, User, VPSInstance, Transaction, StaticIPNickname
 
 load_dotenv()
 
@@ -33,6 +33,13 @@ with app.app_context():
     try:
         from sqlalchemy import text
         db.session.execute(text('ALTER TABLE "user" ADD COLUMN wallet_balance FLOAT DEFAULT 0.0'))
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+
+    try:
+        from sqlalchemy import text
+        db.session.execute(text('ALTER TABLE transaction ADD COLUMN description VARCHAR(255)'))
         db.session.commit()
     except Exception as e:
         db.session.rollback()
@@ -96,6 +103,14 @@ with app.app_context():
             db.session.add(vps)
             db.session.commit()
 
+
+from datetime import timedelta
+
+@app.template_filter('to_ist')
+def to_ist_filter(dt):
+    if not dt: return ""
+    return dt + timedelta(hours=5, minutes=30)
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -157,6 +172,36 @@ def manage():
     expiration_date = due_date.strftime('%Y-%m-%d')
         
     return render_template('manage.html', is_paid=is_paid, is_pending=is_pending, payment_result=payment_result, expiration_date=expiration_date)
+
+
+@app.route('/update-ip-nickname', methods=['POST'])
+def update_ip_nickname():
+    if not session.get('logged_in'):
+        return {"error": "Unauthorized"}, 401
+        
+    req_data = request.json
+    ip_id = req_data.get('ip_id')
+    nickname = req_data.get('nickname')
+    
+    if not ip_id:
+        return {"error": "ip_id is required"}, 400
+        
+    user_id = session.get('user_id')
+    nick_obj = StaticIPNickname.query.filter_by(user_id=user_id, ip_id=ip_id).first()
+    
+    if nickname:
+        if nick_obj:
+            nick_obj.nickname = nickname
+        else:
+            nick_obj = StaticIPNickname(user_id=user_id, ip_id=ip_id, nickname=nickname)
+            db.session.add(nick_obj)
+    else:
+        # If empty nickname is sent, we can delete the record or set it to empty
+        if nick_obj:
+            db.session.delete(nick_obj)
+            
+    db.session.commit()
+    return {"status": "success"}
 
 @app.route('/transactions')
 def transactions():
@@ -323,6 +368,15 @@ def static_ips():
         return redirect(url_for('login'))
     
     ips = get_static_ips()
+    
+    user_id = session.get('user_id')
+    nicknames = StaticIPNickname.query.filter_by(user_id=user_id).all()
+    nickname_map = {n.ip_id: n.nickname for n in nicknames}
+    
+    for ip in ips:
+        if ip['id'] in nickname_map:
+            ip['nickname'] = nickname_map[ip['id']]
+            
     return render_template('static-ips.html', static_ips=ips)
 
 @app.route('/manage-ip/<ip_id>')
@@ -435,7 +489,8 @@ def create_order():
             user_id=user_id,
             order_id=razorpay_order['id'],
             amount=amount_inr,
-            status='PENDING'
+            status='PENDING',
+            description='Cloud Infrastructure Services'
         )
         db.session.add(new_transaction)
         db.session.commit()
@@ -484,7 +539,8 @@ def create_ip_order():
             user_id=user_id,
             order_id=razorpay_order['id'],
             amount=amount_inr,
-            status='PENDING'
+            status='PENDING',
+            description='Cloud Infrastructure Services'
         )
         db.session.add(new_transaction)
         db.session.commit()
@@ -628,7 +684,8 @@ def create_wallet_order():
             user_id=user_id,
             order_id=razorpay_order['id'],
             amount=amount_inr,
-            status='PENDING'
+            status='PENDING',
+            description='Cloud Infrastructure Services'
         )
         db.session.add(new_transaction)
         db.session.commit()

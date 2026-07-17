@@ -119,16 +119,52 @@
                 });
                 const data = await response.json();
                 
-                // Handle duplicate payment prevention
-                if (response.status === 409) {
-                    alert(data.error || 'A payment for this IP is already in progress.');
+                if (response.ok && data.order_id) {
+                    const options = {
+                        key: window.RAZORPAY_KEY,
+                        amount: data.amount,
+                        currency: data.currency,
+                        name: "AVPSSERVER",
+                        description: "Static IP Checkout",
+                        order_id: data.order_id,
+                        prefill: data.prefill,
+                        customer_id: data.customer_id,
+                        remember_customer: true,
+                        handler: async function (res) {
+                            const verifyRes = await fetch('/verify-payment', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    razorpay_payment_id: res.razorpay_payment_id,
+                                    razorpay_order_id: res.razorpay_order_id,
+                                    razorpay_signature: res.razorpay_signature,
+                                    context: 'ip'
+                                })
+                            });
+                            
+                            const verifyData = await verifyRes.json();
+                            if (verifyData.status === 'success') {
+                                window.location.href = '/payment-success/' + data.order_id;
+                            } else {
+                                alert("Payment verification failed. Please contact support.");
+                            }
+                        }
+                    };
+                    
+                    const rzp = new Razorpay(options);
+                    rzp.on('payment.failed', function (response){
+                        alert(response.error.description);
+                    });
+                    rzp.open();
+                    
+                    checkoutBtn.innerText = 'Complete Payment';
+                    checkoutBtn.disabled = false;
+                } else if (data.error === "profile_incomplete") {
+                    window.location.href = '/profile';
+                } else {
+                    alert("Failed to create order: " + (data.error || 'Unknown error'));
                     checkoutBtn.disabled = false;
                     checkoutBtn.innerText = 'Complete Payment';
-                    return;
-                }
-
-                if (data.payment_session_id) {
-                    alert("Payment system under maintenance. Please contact support.");
                 }
             } catch (error) {
                 console.error("Error creating order:", error);
