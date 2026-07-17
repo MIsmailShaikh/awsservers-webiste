@@ -119,34 +119,73 @@ if (fl) {
 const yearEl = document.getElementById("year");
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-// ------------------ Cashfree checkout ------------------
+// ------------------ Razorpay checkout ------------------
 document.querySelectorAll("button.buy").forEach(btn => {
   btn.addEventListener("click", async () => {
     const plan = PLANS.find(p => p.id === btn.dataset.plan);
-    if (!plan.paymentSessionId) {
-      alert("This plan doesn't have a Cashfree payment_session_id yet.\n\nGenerate one via the Cashfree dashboard/API and paste it into app.js → PLANS[" + plan.id + "].paymentSessionId.");
-      return;
-    }
-    if (typeof Cashfree !== "function") {
-      alert("Cashfree SDK not loaded yet. Please retry in a moment.");
-      return;
-    }
     try {
       btn.disabled = true;
       const original = btn.innerHTML;
       btn.innerHTML = "Opening checkout…";
-      const cf = Cashfree({ mode: CASHFREE_MODE });
-      const res = await cf.checkout({ paymentSessionId: plan.paymentSessionId, redirectTarget: "_self" });
-      if (res && res.error) throw new Error(res.error.message || "Checkout failed");
+      
+      const response = await fetch('/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan_id: plan.id })
+      });
+      const data = await response.json();
+      
+      if (response.ok && data.order_id) {
+        const options = {
+          key: window.RAZORPAY_KEY,
+          amount: data.amount,
+          currency: data.currency,
+          name: "AVPSSERVER",
+          description: "VPS Purchase - " + plan.name,
+          order_id: data.order_id,
+          prefill: data.prefill,
+          customer_id: data.customer_id,
+          remember_customer: true,
+          handler: async function (response) {
+            // Verify payment
+            const verifyRes = await fetch('/verify-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature,
+                    context: 'vps'
+                })
+            });
+            const verifyData = await verifyRes.json();
+            if (verifyRes.ok && verifyData.status === 'success') {
+                window.location.href = '/payment-success/' + data.order_id;
+            } else {
+                alert("Payment verification failed!");
+            }
+          },
+          theme: { color: "#673de7" }
+        };
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (response){
+            alert("Payment failed: " + response.error.description);
+        });
+        rzp.open();
+      } else if (data.error === "profile_incomplete") {
+        window.location.href = '/profile';
+      } else {
+        alert("Failed to create order: " + (data.error || 'Unknown error'));
+      }
       btn.innerHTML = original;
     } catch (e) {
       alert("Checkout error: " + (e.message || e));
+      btn.innerHTML = "Buy " + plan.name + " &rarr;";
     } finally {
       btn.disabled = false;
     }
   });
 });
-
 // ------------------ Terminal Animation ------------------
 const terminalCommands = [
   { text: "$ avps deploy --plan pro --region blr1 --os ubuntu-24.04", type: "cmd" },

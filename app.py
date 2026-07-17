@@ -13,6 +13,17 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgres
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
+import razorpay
+
+RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "")
+RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "")
+
+razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+
+@app.context_processor
+def inject_razorpay_key():
+    return dict(razorpay_key_id=RAZORPAY_KEY_ID)
+
 db.init_app(app)
 
 with app.app_context():
@@ -25,6 +36,41 @@ with app.app_context():
         db.session.commit()
     except Exception as e:
         db.session.rollback()
+
+    try:
+        from sqlalchemy import text
+        db.session.execute(text('ALTER TABLE "user" ADD COLUMN razorpay_customer_id VARCHAR(100)'))
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+
+    try:
+        from sqlalchemy import text
+        db.session.execute(text('ALTER TABLE "user" ADD COLUMN company_name VARCHAR(100)'))
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+
+    try:
+        from sqlalchemy import text
+        db.session.execute(text('ALTER TABLE "user" ADD COLUMN full_name VARCHAR(100)'))
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        
+    try:
+        from sqlalchemy import text
+        db.session.execute(text('ALTER TABLE "user" ADD COLUMN email VARCHAR(120)'))
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        
+    try:
+        from sqlalchemy import text
+        db.session.execute(text('ALTER TABLE "user" ADD COLUMN phone VARCHAR(20)'))
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
     
     # Automatically seed the admin user if it doesn't exist
     admin = User.query.filter_by(username='ismailzst643').first()
@@ -34,19 +80,21 @@ with app.app_context():
         db.session.add(admin)
         db.session.commit()
         
-        # Add a dummy VPS instance to match the UI
-        vps = VPSInstance(
-            user_id=admin.id,
-            vps_id='56892AHF',
-            name='edge-1',
-            plan_name='Pro',
-            status='Active',
-            billing_date=16,
-            due_date=20,
-            monthly_price=33783.90
-        )
-        db.session.add(vps)
-        db.session.commit()
+        # Add a dummy VPS instance to match the UI if it doesn't exist
+        vps = VPSInstance.query.filter_by(vps_id='56892AHF').first()
+        if not vps:
+            vps = VPSInstance(
+                user_id=admin.id,
+                vps_id='56892AHF',
+                name='edge-1',
+                plan_name='Pro',
+                status='Active',
+                billing_date=16,
+                due_date=20,
+                monthly_price=33783.90
+            )
+            db.session.add(vps)
+            db.session.commit()
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -330,13 +378,131 @@ import requests
 import uuid
 
 
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+        
+    user = User.query.get(session['user_id'])
+    
+    if request.method == 'POST':
+        user.full_name = request.form.get('full_name')
+        user.email = request.form.get('email')
+        user.phone = request.form.get('phone')
+        user.company_name = request.form.get('company_name')
+        
+        if not user.razorpay_customer_id:
+            try:
+                cust = razorpay_client.customer.create({
+                    "name": user.full_name,
+                    "email": user.email,
+                    "contact": user.phone
+                })
+                user.razorpay_customer_id = cust['id']
+            except Exception as e:
+                print(f"Failed to create Razorpay customer: {e}")
+                
+        db.session.commit()
+        
+        # If they came from checkout, we should let them go back, but for simplicity, just show success.
+        flash('Profile updated successfully! You can now proceed to checkout.')
+        return redirect(url_for('manage'))
+        
+    return render_template('profile.html', user=user)
+
 @app.route('/create-order', methods=['POST'])
 def create_order():
-    return {"error": "Payment system under maintenance"}, 503
+    if not session.get('logged_in'):
+        return {"error": "Unauthorized"}, 401
+    
+    user_id = session.get('user_id', 1)
+    user = User.query.get(user_id)
+    if not user.full_name or not user.email or not user.phone:
+        return {"error": "profile_incomplete"}, 400
+        
+    amount_inr = 39865.00
+    amount_paise = int(amount_inr * 100)
+    
+    try:
+        order_data = {
+            "amount": amount_paise,
+            "currency": "INR",
+            "receipt": f"receipt_{user_id}_{uuid.uuid4().hex[:6]}"
+        }
+        razorpay_order = razorpay_client.order.create(data=order_data)
+        
+        new_transaction = Transaction(
+            user_id=user_id,
+            order_id=razorpay_order['id'],
+            amount=amount_inr,
+            status='PENDING'
+        )
+        db.session.add(new_transaction)
+        db.session.commit()
+        
+        return {
+            "order_id": razorpay_order['id'],
+            "amount": amount_paise,
+            "currency": "INR",
+            "prefill": {
+                "name": user.full_name,
+                "email": user.email,
+                "contact": user.phone
+            },
+            "customer_id": user.razorpay_customer_id
+        }
+    except Exception as e:
+        print(f"Razorpay error: {e}")
+        return {"error": "Failed to create order"}, 500
 
 @app.route('/create-ip-order', methods=['POST'])
 def create_ip_order():
-    return {"error": "Payment system under maintenance"}, 503
+    if not session.get('logged_in'):
+        return {"error": "Unauthorized"}, 401
+        
+    user_id = session.get('user_id', 1)
+    user = User.query.get(user_id)
+    if not user.full_name or not user.email or not user.phone:
+        return {"error": "profile_incomplete"}, 400
+        
+    req_data = request.json or {}
+    ip_id = req_data.get('ip_id', 'unknown')
+    
+    amount_inr = 16481.00 if ip_id == "8547JW4" else 16856.90
+    amount_paise = int(amount_inr * 100)
+    
+    try:
+        order_data = {
+            "amount": amount_paise,
+            "currency": "INR",
+            "receipt": f"ip_{ip_id}_{uuid.uuid4().hex[:4]}",
+            "notes": {"ip_id": ip_id}
+        }
+        razorpay_order = razorpay_client.order.create(data=order_data)
+        
+        new_transaction = Transaction(
+            user_id=user_id,
+            order_id=razorpay_order['id'],
+            amount=amount_inr,
+            status='PENDING'
+        )
+        db.session.add(new_transaction)
+        db.session.commit()
+        
+        return {
+            "order_id": razorpay_order['id'],
+            "amount": amount_paise,
+            "currency": "INR",
+            "prefill": {
+                "name": user.full_name,
+                "email": user.email,
+                "contact": user.phone
+            },
+            "customer_id": user.razorpay_customer_id
+        }
+    except Exception as e:
+        print(f"Razorpay IP error: {e}")
+        return {"error": "Failed to create order"}, 500
 
 @app.route('/check-order')
 def check_order():
@@ -431,7 +597,101 @@ def wallet():
 
 @app.route('/create-wallet-order', methods=['POST'])
 def create_wallet_order():
-    return {"error": "Payment system under maintenance"}, 503
+    if not session.get('logged_in'):
+        return {"error": "Unauthorized"}, 401
+        
+    user_id = session.get('user_id', 1)
+    user = User.query.get(user_id)
+    if not user.full_name or not user.email or not user.phone:
+        return {"error": "profile_incomplete"}, 400
+        
+    req_data = request.json or {}
+    try:
+        amount_inr = float(req_data.get('amount', 0))
+    except ValueError:
+        return {"error": "Invalid amount"}, 400
+        
+    if amount_inr < 1:
+        return {"error": "Amount must be at least 1 INR"}, 400
+        
+    amount_paise = int(amount_inr * 100)
+    
+    try:
+        order_data = {
+            "amount": amount_paise,
+            "currency": "INR",
+            "receipt": f"wallet_{user_id}_{uuid.uuid4().hex[:6]}"
+        }
+        razorpay_order = razorpay_client.order.create(data=order_data)
+        
+        new_transaction = Transaction(
+            user_id=user_id,
+            order_id=razorpay_order['id'],
+            amount=amount_inr,
+            status='PENDING'
+        )
+        db.session.add(new_transaction)
+        db.session.commit()
+        
+        return {
+            "order_id": razorpay_order['id'],
+            "amount": amount_paise,
+            "currency": "INR",
+            "prefill": {
+                "name": user.full_name,
+                "email": user.email,
+                "contact": user.phone
+            },
+            "customer_id": user.razorpay_customer_id
+        }
+    except Exception as e:
+        print(f"Razorpay Wallet error: {e}")
+        return {"error": "Failed to create order"}, 500
+
+@app.route('/verify-payment', methods=['POST'])
+def verify_payment():
+    if not session.get('logged_in'):
+        return {"error": "Unauthorized"}, 401
+        
+    req_data = request.json or {}
+    razorpay_payment_id = req_data.get('razorpay_payment_id')
+    razorpay_order_id = req_data.get('razorpay_order_id')
+    razorpay_signature = req_data.get('razorpay_signature')
+    
+    if not razorpay_payment_id or not razorpay_order_id or not razorpay_signature:
+        return {"error": "Missing signature fields"}, 400
+        
+    try:
+        razorpay_client.utility.verify_payment_signature({
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': razorpay_payment_id,
+            'razorpay_signature': razorpay_signature
+        })
+    except Exception as e:
+        print(f"Signature verification failed: {e}")
+        return {"error": "Invalid signature"}, 400
+        
+    # Signature is valid, update DB
+    tx = Transaction.query.filter_by(order_id=razorpay_order_id).first()
+    if tx and tx.status != 'SUCCESS':
+        tx.status = 'SUCCESS'
+        
+        # Determine if it was a wallet top-up by notes or amount
+        # For our app, we can just check if it was a wallet transaction by checking the user's latest transaction or passing metadata
+        # A better way is passing the context from the frontend, but we can also infer:
+        # If it was from wallet, we need to add to wallet balance.
+        # Actually, let's pass an additional flag from frontend if it was a wallet topup.
+        context = req_data.get('context')
+        if context == 'wallet':
+            user = User.query.get(tx.user_id)
+            if user:
+                if user.wallet_balance is None: user.wallet_balance = 0.0
+                user.wallet_balance += tx.amount
+        
+        db.session.commit()
+        return {"status": "success"}
+        
+    return {"status": "success", "note": "Already processed"}
 
 @app.route('/simulate-wallet-success/<order_id>')
 def simulate_wallet_success(order_id):
@@ -448,6 +708,34 @@ def simulate_wallet_success(order_id):
         db.session.commit()
         
     return redirect(url_for('wallet'))
+
+
+@app.route('/payment-success/<order_id>')
+def payment_success(order_id):
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+        
+    tx = Transaction.query.filter_by(order_id=order_id).first()
+    if not tx:
+        flash("Order not found")
+        return redirect(url_for('dashboard'))
+        
+    user = User.query.get(tx.user_id)
+    return render_template('success.html', tx=tx, user=user)
+
+@app.route('/download-invoice/<order_id>')
+def download_invoice(order_id):
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+        
+    tx = Transaction.query.filter_by(order_id=order_id).first()
+    if not tx:
+        flash("Order not found")
+        return redirect(url_for('dashboard'))
+        
+    user = User.query.get(tx.user_id)
+    return render_template('invoice.html', tx=tx, user=user)
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

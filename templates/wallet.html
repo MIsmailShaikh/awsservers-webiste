@@ -23,6 +23,8 @@
       }
     }
   </script>
+  <script>window.RAZORPAY_KEY = "{{ razorpay_key_id }}";</script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body class="bg-slate-50 font-sans text-slate-900 flex h-screen overflow-hidden">
   
@@ -52,6 +54,10 @@
       </nav>
     </div>
     <div class="p-4 border-t border-slate-200">
+            <a href="/profile" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors font-medium">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        Billing Profile
+      </a>
       <a href="/transactions" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors font-medium">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h0M2 9.5h20"/></svg>
         Transactions
@@ -200,9 +206,49 @@
             
             const data = await response.json();
             
-            if (response.ok && data.payment_session_id) {
-                // Step 2: Initialize Cashfree Checkout
-                alert("Payment system under maintenance. Please contact support.");
+            
+
+            if (response.ok && data.order_id) {
+                // Step 2: Initialize Razorpay Checkout
+                const options = {
+                    key: window.RAZORPAY_KEY,
+                    amount: data.amount,
+                    currency: data.currency,
+                    name: "AVPSSERVER",
+                    description: "Wallet Topup",
+                    order_id: data.order_id,
+                    prefill: data.prefill,
+                    customer_id: data.customer_id,
+                    remember_customer: true,
+                    handler: async function (res) {
+                        const verifyRes = await fetch('/verify-payment', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                razorpay_payment_id: res.razorpay_payment_id,
+                                razorpay_order_id: res.razorpay_order_id,
+                                razorpay_signature: res.razorpay_signature,
+                                context: 'wallet'
+                            })
+                        });
+                        const verifyData = await verifyRes.json();
+                        if (verifyRes.ok && verifyData.status === 'success') {
+                            window.location.href = '/payment-success/' + data.order_id;
+                        } else {
+                            alert("Payment verification failed!");
+                        }
+                    },
+                    theme: { color: "#673de7" }
+                };
+                const rzp = new window.Razorpay(options);
+                rzp.on('payment.failed', function (res){
+                    alert("Payment failed: " + res.error.description);
+                });
+                rzp.open();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            } else if (data.error === "profile_incomplete") {
+                window.location.href = '/profile';
             } else {
                 alert('Error creating order: ' + (data.error || 'Unknown error'));
                 btn.innerHTML = originalText;

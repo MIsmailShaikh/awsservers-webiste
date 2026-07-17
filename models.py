@@ -9,6 +9,11 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     wallet_balance = db.Column(db.Float, default=0.0)
+    full_name = db.Column(db.String(100), nullable=True)
+    email = db.Column(db.String(120), nullable=True)
+    phone = db.Column(db.String(20), nullable=True)
+    company_name = db.Column(db.String(100), nullable=True)
+    razorpay_customer_id = db.Column(db.String(100), nullable=True)
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
