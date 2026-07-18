@@ -31,6 +31,7 @@ class VPSInstance(db.Model):
     billing_date = db.Column(db.Integer, default=16)
     due_date = db.Column(db.Integer, default=20)
     monthly_price = db.Column(db.Float, nullable=False)
+    last_billed_month = db.Column(db.String(10), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
 class Transaction(db.Model):
@@ -51,3 +52,17 @@ class StaticIPNickname(db.Model):
     
     # Ensure a user can only have one nickname per IP
     __table_args__ = (db.UniqueConstraint('user_id', 'ip_id', name='_user_ip_uc'),)
+
+class StaticIP(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    ip_id = db.Column(db.String(20), unique=True, nullable=False) # e.g. 238JU2
+    address = db.Column(db.String(50), nullable=False)
+    billing_date = db.Column(db.Integer, default=6)
+    due_date = db.Column(db.Integer, default=10)
+    monthly_price = db.Column(db.Float, default=10.0)
+    status = db.Column(db.String(20), default='Active')
+    is_reserved = db.Column(db.Boolean, default=True)
+    included_in = db.Column(db.String(50), nullable=True) # e.g. 'VPS: 56892AHF'
+    last_billed_month = db.Column(db.String(10), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
