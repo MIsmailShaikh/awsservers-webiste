@@ -10,7 +10,7 @@ services:
       - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
       - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
     # Nginx Proxy Manager handles routing to port 5000 internally
-    command: waitress-serve --threads=2 --port=5000 app:app
+    command: waitress-serve --threads=8 --port=5000 app:app
     networks:
       - zst-gateway
 
