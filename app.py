@@ -923,10 +923,38 @@ if __name__ != '__main__':
 def force_trigger_billing():
     try:
         ip = StaticIP.query.filter_by(ip_id='236BG1').first()
-        if ip:
-            ip.last_billed_month = None
-            db.session.commit()
-        daily_billing_check()
-        return "Billing cycle forcefully triggered in the background. Check your email!"
+        if not ip:
+            return "Error: IP 236BG1 not found in database."
+        
+        user = User.query.get(ip.user_id)
+        if not user:
+            return f"Error: User {ip.user_id} not found."
+            
+        due_date_dt = datetime.now().replace(day=ip.due_date)
+        if datetime.now() > due_date_dt:
+            due_date_dt = (due_date_dt.replace(day=1) + timedelta(days=32)).replace(day=ip.due_date)
+        gen_date_dt = due_date_dt - timedelta(days=4)
+        
+        due_date_str = due_date_dt.strftime('%d %b, %Y')
+        gen_date_str = gen_date_dt.strftime('%d %b, %Y')
+        
+        nick_obj = StaticIPNickname.query.filter_by(user_id=ip.user_id, ip_id=ip.ip_id).first()
+        nickname = nick_obj.nickname if nick_obj else ""
+        
+        target_email = user.email
+        if not target_email:
+            return f"Error: User {user.username} (ID: {user.id}) has NO email address configured in the database!"
+            
+        amount = ip.monthly_price
+        if amount == 0.0:
+            return f"Error: The monthly price for this IP is 0.0 (Included in VPS). Bills are not generated for free IPs."
+            
+        send_billing_email(user.company_name or user.username or f"Valued Customer", target_email, f"Static IP ({ip.address})", nickname, amount, gen_date_str, due_date_str)
+        
+        ip.last_billed_month = None
+        db.session.commit()
+        
+        return f"SUCCESS! Billing email generated for IP {ip.address} (Price: {amount}) and sent to {target_email} (User: {user.username})."
     except Exception as e:
-        return f"Error: {e}"
+        import traceback
+        return f"Exception: {str(e)}\n\n{traceback.format_exc()}"
