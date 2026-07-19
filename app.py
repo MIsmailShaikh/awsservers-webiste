@@ -381,6 +381,15 @@ def get_static_ips():
             "can_pay": can_pay
         })
         
+    status_priority = {
+        "Unpaid": 1,
+        "Pending": 2,
+        "Upcoming": 3,
+        "Paid": 4,
+        "Included in VPS": 5
+    }
+    ips.sort(key=lambda x: status_priority.get(x['bill_status'], 99))
+        
     return ips
 
 @app.route('/static-ips')
