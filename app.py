@@ -915,7 +915,7 @@ def daily_billing_check():
                     gen_date_str = gen_date_dt.strftime('%d %b, %Y')
                     nick_obj = StaticIPNickname.query.filter_by(user_id=ip.user_id, ip_id=ip.ip_id).first()
                     nickname = nick_obj.nickname if nick_obj else ""
-                    send_billing_email(user.company_name or user.username or f"Valued Customer", user.email, f"Static IP ({ip.address})", nickname, ip.monthly_price * 1.18, gen_date_str, due_date_str)
+                    send_billing_email(user.company_name or user.username or f"Valued Customer", user.email, f"Static IP (ID: {ip.ip_id})", nickname, ip.monthly_price * 1.18, gen_date_str, due_date_str)
                     ip.last_billed_month = current_month
                     db.session.commit()
 
@@ -958,7 +958,7 @@ def force_trigger_billing():
             return f"Error: The monthly price for this IP is 0.0 (Included in VPS). Bills are not generated for free IPs."
             
         total_with_tax = amount * 1.18
-        send_billing_email(user.company_name or user.username or f"Valued Customer", target_email, f"Static IP ({ip.address})", nickname, total_with_tax, gen_date_str, due_date_str)
+        send_billing_email(user.company_name or user.username or f"Valued Customer", target_email, f"Static IP (ID: {ip.ip_id})", nickname, total_with_tax, gen_date_str, due_date_str)
         
         ip.last_billed_month = None
         db.session.commit()
