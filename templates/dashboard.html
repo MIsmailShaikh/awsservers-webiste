@@ -26,8 +26,11 @@
 </head>
 <body class="bg-slate-50 font-sans text-slate-900 flex h-screen overflow-hidden">
   
+  <!-- Mobile Sidebar Overlay -->
+  <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-30 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0"></div>
+
   <!-- Sidebar -->
-  <aside class="w-64 bg-white border-r border-slate-200 h-full flex flex-col hidden md:flex shrink-0">
+  <aside id="dashboard-sidebar" class="w-64 bg-white border-r border-slate-200 h-full flex flex-col hidden md:flex shrink-0 fixed md:static z-40 transform transition-transform duration-300 md:translate-x-0 -translate-x-full">
     <!-- Logo -->
     <div class="h-16 flex items-center px-6 border-b border-slate-200">
       <a href="/" class="flex items-center gap-2 font-display text-lg font-bold"> <img src="{{ url_for('static', filename='images/avpsserverlogo.png') }}" alt="AVPSSERVER Logo" class="h-8 w-auto"><span class="text-slate-900 ml-1">VPSSERVER</span></a>
@@ -70,7 +73,7 @@
     <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0">
       <div class="flex items-center gap-4">
         <!-- Mobile menu button -->
-        <button class="md:hidden text-slate-500 hover:text-slate-900">
+        <button id="mobile-sidebar-toggle" class="md:hidden text-slate-500 hover:text-slate-900 focus:outline-none">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
@@ -112,193 +115,107 @@
         </button>
       </div>
 
-      <!-- Server List Card -->
-      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
-        
-        <!-- Table Header (hidden on mobile) -->
-        <div class="hidden md:grid grid-cols-12 gap-4 px-6 py-4 border-b border-slate-100 text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-white">
-          <div class="col-span-4 flex items-center gap-1.5 cursor-pointer hover:text-slate-800">DETAILS <span class="text-slate-400 font-normal">↑</span></div>
-          <div class="col-span-3 flex items-center gap-1.5 cursor-pointer hover:text-slate-800">IP ADDRESS <span class="text-slate-400 font-normal">↓</span></div>
-          <div class="col-span-2 flex items-center gap-1.5 cursor-pointer hover:text-slate-800">STATUS <span class="text-slate-400 font-normal">↑</span></div>
-          <div class="col-span-3 flex items-center justify-end gap-1.5 cursor-pointer hover:text-slate-800 pr-12">EXPIRATION DATE <span class="text-slate-400 font-normal">↓</span></div>
-        </div>
-
-        <!-- Server Row Container -->
-        <div class="border-b border-slate-50 last:border-0">
-          
-          <!-- Server Row -->
-          <div class="flex flex-col md:grid md:grid-cols-12 gap-4 px-6 py-5 items-center bg-white hover:bg-slate-50/50 transition-colors cursor-pointer group" onclick="toggleDetails('server-details-1', 'chevron-1')">
-            
-            <!-- Details -->
-            <div class="col-span-4 flex items-center gap-4 w-full">
-              <button id="chevron-1" class="text-slate-400 group-hover:text-primary hidden md:block transition-all duration-200">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-              </button>
-              <div class="w-10 h-10 rounded-full bg-[#FFEAE0] flex items-center justify-center shrink-0 border border-[#FFD5C2]">
-                <img src="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" alt="Ubuntu" class="w-5 h-5 object-contain" onerror="this.style.display='none'" />
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-[13px] font-bold text-slate-900 truncate">VPS ID:56892AHF</p>
-                <p class="text-[11px] text-slate-500 font-medium mt-0.5">KVM</p>
-              </div>
-            </div>
-
-            <!-- IP -->
-            <div class="col-span-3 w-full md:w-auto flex items-center justify-between md:justify-start">
-              <span class="md:hidden text-xs text-slate-500 font-semibold uppercase">IP:</span>
-              <div class="flex items-center gap-2">
-                <span class="text-[13px] text-slate-700 font-medium">72.60.220.68</span>
-                <button class="text-slate-300 hover:text-primary transition-colors" title="Copy IP" onclick="event.stopPropagation()">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Status -->
-            <div class="col-span-2 w-full md:w-auto flex items-center justify-between md:justify-start">
-              <span class="md:hidden text-xs text-slate-500 font-semibold uppercase">Status:</span>
-              <div class="inline-flex items-center gap-1.5 bg-[#E6F8F0] px-2.5 py-1 rounded-md border border-[#CFF0E0]">
-                <span class="w-1.5 h-1.5 rounded-full bg-[#059669]"></span>
-                <span class="text-[10px] font-bold text-[#059669] uppercase tracking-wide">Running</span>
-              </div>
-            </div>
-
-            <!-- Actions & Exp -->
-            <div class="col-span-3 w-full flex items-center justify-between md:justify-end gap-6">
-              <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
-                <span class="md:hidden text-xs text-slate-500 font-semibold uppercase">Expires:</span>
-                <span class="text-[13px] text-slate-600 font-medium">2026-11-25</span>
-              </div>
-              <div class="flex items-center gap-2 shrink-0">
-                <a href="/manage" class="px-4 py-1.5 rounded-lg border border-slate-200 text-[13px] font-bold text-primary hover:border-primary hover:bg-indigo-50 transition-colors inline-block" onclick="event.stopPropagation()">
-                  Manage
-                </a>
-                <button class="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 hover:text-slate-800 hover:border-slate-300 transition-colors" onclick="event.stopPropagation()">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Expanded Details Panel (Smooth Accordion) -->
-          <div id="server-details-1" class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-in-out bg-[#f8fafc]">
-            <div class="overflow-hidden">
-              <div class="p-6 md:pl-[4.5rem] border-t border-slate-100 shadow-inner">
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
-                
-                  <!-- CPU -->
-                <div class="flex items-start gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-                  <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center justify-between mb-0.5">
-                      <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Processor</p>
-                      <p id="cpu-val" class="text-[10px] font-bold text-blue-600 transition-all duration-300">14%</p>
-                    </div>
-                    <p class="text-sm font-bold text-slate-900 truncate">128 vCPU</p>
-                    <div class="mt-3 h-10 w-full relative">
-                      <canvas id="cpuChart"></canvas>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- RAM -->
-                <div class="flex items-start gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-                  <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center justify-between mb-0.5">
-                      <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Memory</p>
-                      <p id="ram-val" class="text-[10px] font-bold text-emerald-600 transition-all duration-300">54%</p>
-                    </div>
-                    <p id="ram-text" class="text-sm font-bold text-slate-900 truncate transition-all duration-300">32.4 / 60 GB</p>
-                    <div class="mt-3 h-10 w-full relative">
-                      <canvas id="ramChart"></canvas>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Storage -->
-                <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-                  <div class="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600 shrink-0">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center justify-between mb-0.5">
-                      <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Storage</p>
-                      <p class="text-[10px] font-bold text-purple-600">21%</p>
-                    </div>
-                    <p class="text-sm font-bold text-slate-900 truncate">840 / 4,000 GB</p>
-                    <div class="mt-2 w-full h-1 bg-slate-100 rounded-full overflow-hidden">
-                      <div class="h-full bg-purple-500 rounded-full" style="width: 21%"></div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Network -->
-                <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-                  <div class="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center text-cyan-600 shrink-0">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                  </div>
-                  <div>
-                    <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Bandwidth</p>
-                    <p class="text-sm font-bold text-slate-900 mt-0.5">10 Gbps Unmetered</p>
-                  </div>
-                </div>
-
-                <!-- Root Access -->
-                <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-                  <div class="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600 shrink-0">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                  </div>
-                  <div>
-                    <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Root Access</p>
-                    <div class="flex items-center gap-2 mt-0.5">
-                      <p class="text-sm font-bold text-slate-900">root:••••••••</p>
-                      <button class="text-slate-400 hover:text-primary transition-colors" title="Copy Password">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      <div class="mt-8">
+        <h2 class="text-lg font-bold text-slate-900 mb-4">Active Servers</h2>
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[800px]">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                  <th class="px-6 py-4">DETAILS</th>
+                  <th class="px-6 py-4">IP ADDRESS</th>
+                  <th class="px-6 py-4">STATUS</th>
+                  <th class="px-6 py-4 text-right">EXPIRATION DATE</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="4">
+                    <!-- Server Row -->
+                    <div class="flex items-center gap-4 px-6 py-5 cursor-pointer group hover:bg-slate-50/50 transition-colors" onclick="toggleDetails('server-details-1', 'chevron-1')">
+                      <button id="chevron-1" class="text-slate-400 group-hover:text-primary transition-all duration-200">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                       </button>
+                      <div class="w-10 h-10 rounded-full bg-[#FFEAE0] flex items-center justify-center shrink-0 border border-[#FFD5C2]">
+                        <img src="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" alt="Ubuntu" class="w-5 h-5 object-contain" onerror="this.style.display='none'" />
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-[13px] font-bold text-slate-900">VPS ID:56892AHF</p>
+                        <p class="text-[11px] text-slate-500 font-medium">KVM</p>
+                      </div>
+                      <div class="text-[13px] text-slate-700 font-medium">72.60.220.68</div>
+                      <div class="inline-flex items-center gap-1.5 bg-[#E6F8F0] px-2.5 py-1 rounded-md border border-[#CFF0E0]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#059669]"></span>
+                        <span class="text-[10px] font-bold text-[#059669] uppercase tracking-wide">Running</span>
+                      </div>
+                      <div class="text-[13px] text-slate-600 font-medium text-right pr-6">2026-11-25</div>
                     </div>
-                  </div>
-                </div>
 
-                <!-- Location -->
-                <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-                  <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  </div>
-                  <div>
-                    <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Datacenter</p>
-                    <p class="text-sm font-bold text-slate-900 mt-0.5">Mumbai, IN (ap-south)</p>
-                  </div>
-                </div>
-
-                </div> <!-- End Grid -->
-                
-                <!-- Live Chart Section -->
-                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
-                  <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-[11px] font-bold text-slate-500 uppercase tracking-wide">Network Traffic (Live)</h3>
-                    <div class="flex items-center gap-1.5 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
-                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse"></span>
-                      <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wide">Live Stream</span>
+                    <!-- Expanded Details Panel -->
+                    <div id="server-details-1" class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-in-out bg-[#f8fafc]">
+                      <div class="overflow-hidden">
+                        <div class="p-6 border-t border-slate-100 shadow-inner">
+                          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
+                            <!-- CPU -->
+                            <div class="flex items-start gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                              <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                              </div>
+                              <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-0.5">
+                                  <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Processor</p>
+                                  <p id="cpu-val" class="text-[10px] font-bold text-blue-600 transition-all duration-300">14%</p>
+                                </div>
+                                <p class="text-sm font-bold text-slate-900 truncate">128 vCPU</p>
+                                <div class="mt-3 h-10 w-full relative"><canvas id="cpuChart"></canvas></div>
+                              </div>
+                            </div>
+                            <!-- RAM -->
+                            <div class="flex items-start gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                              <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg>
+                              </div>
+                              <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-0.5">
+                                  <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Memory</p>
+                                  <p id="ram-val" class="text-[10px] font-bold text-emerald-600 transition-all duration-300">54%</p>
+                                </div>
+                                <p id="ram-text" class="text-sm font-bold text-slate-900 truncate transition-all duration-300">32.4 / 60 GB</p>
+                                <div class="mt-3 h-10 w-full relative"><canvas id="ramChart"></canvas></div>
+                              </div>
+                            </div>
+                            <!-- Storage -->
+                            <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                              <div class="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600 shrink-0">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                              </div>
+                              <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-0.5">
+                                  <p class="text-[11px] text-slate-500 font-bold uppercase tracking-wide">Storage</p>
+                                  <p class="text-[10px] font-bold text-purple-600">21%</p>
+                                </div>
+                                <p class="text-sm font-bold text-slate-900 truncate">840 / 4,000 GB</p>
+                                <div class="mt-2 w-full h-1 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-purple-500 rounded-full" style="width: 21%"></div></div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- Live Chart Section -->
+                          <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                            <div class="flex items-center justify-between mb-4">
+                              <h3 class="text-[11px] font-bold text-slate-500 uppercase tracking-wide">Network Traffic (Live)</h3>
+                            </div>
+                            <div class="h-48 w-full relative"><canvas id="networkChart"></canvas></div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="h-48 w-full relative">
-                    <canvas id="networkChart"></canvas>
-                  </div>
-                </div>
-
-              </div>
-            </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-
       </div>
-
     </div>
   </main>
 

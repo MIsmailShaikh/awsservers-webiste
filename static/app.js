@@ -268,3 +268,33 @@ if (closeModalBtn) closeModalBtn.addEventListener('click', closeLoginModal);
 if (modalOverlay) modalOverlay.addEventListener('click', closeLoginModal);
 
 // Removed old static login form handling so Flask backend can take over
+
+// ------------------ Dashboard Mobile Sidebar Toggle ------------------
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebarToggleBtn = document.getElementById('mobile-sidebar-toggle');
+  const sidebar = document.getElementById('dashboard-sidebar');
+  const overlay = document.getElementById('mobile-sidebar-overlay');
+
+  if (sidebarToggleBtn && sidebar && overlay) {
+    function toggleSidebar() {
+      const isClosed = sidebar.classList.contains('-translate-x-full');
+      if (isClosed) {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        // Small delay for fade in
+        setTimeout(() => {
+          overlay.classList.remove('opacity-0');
+        }, 10);
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('opacity-0');
+        setTimeout(() => {
+          overlay.classList.add('hidden');
+        }, 300);
+      }
+    }
+
+    sidebarToggleBtn.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', toggleSidebar);
+  }
+});
