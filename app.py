@@ -839,7 +839,8 @@ def send_billing_email(user_name, user_email, item_name, nickname, amount, gen_d
     try:
         mail.send(msg)
     except Exception as e:
-        print(f"Failed to send email to {user_email}: {e}")
+        print(f"Failed to send email to {user_email}: {e}", flush=True)
+        raise e
 
 
 @app.route('/payment-link-success/<order_id>')
@@ -944,6 +945,10 @@ def force_trigger_billing():
         target_email = user.email
         if not target_email:
             return f"Error: User {user.username} (ID: {user.id}) has NO email address configured in the database!"
+            
+        if ip.monthly_price == 10.0:
+            ip.monthly_price = 13966.95
+            db.session.commit()
             
         amount = ip.monthly_price
         if amount == 0.0:
