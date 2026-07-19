@@ -363,6 +363,25 @@ def get_static_ips():
             bill_status = "Included in VPS"
             due_date_str = "Included in VPS"
             can_pay = False
+        else:
+            if bill_status == "Unpaid" or bill_status == "Upcoming":
+                from datetime import datetime
+                gen_date_obj = datetime.strptime(gen_date_str, "%d %b %Y")
+                
+                expected_amount = 16481.00 if db_ip.ip_id == "8547JW4" else 16856.90
+                
+                latest_tx = Transaction.query.filter_by(
+                    user_id=user_id,
+                    amount=expected_amount
+                ).order_by(Transaction.created_at.desc()).first()
+                
+                if latest_tx and latest_tx.created_at >= gen_date_obj:
+                    if latest_tx.status in ['SUCCESS', 'PAID', 'SIMULATED']:
+                        bill_status = "Paid"
+                        can_pay = False
+                    elif latest_tx.status == 'PENDING':
+                        bill_status = "Pending"
+                        can_pay = False
             
         ips.append({
             "id": db_ip.ip_id,
