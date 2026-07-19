@@ -138,9 +138,6 @@ with app.app_context():
     admin = User.query.get(1)
     if admin:
         admin.email = 'mohammed.ismail@zstoss.in'
-        ip_236 = StaticIP.query.filter_by(ip_id='236BG1').first()
-        if ip_236:
-            ip_236.last_billed_month = None
         db.session.commit()
             
         for ip_data in ips_to_seed:
