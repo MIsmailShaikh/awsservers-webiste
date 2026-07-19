@@ -137,12 +137,11 @@ with app.app_context():
     
     admin = User.query.filter_by(username='ismailzst643').first()
     if admin:
-        if not admin.email:
-            admin.email = 'mohammedismailshaikh454@gmail.com'
-            ip_236 = StaticIP.query.filter_by(ip_id='236BG1').first()
-            if ip_236:
-                ip_236.last_billed_month = None
-            db.session.commit()
+        admin.email = 'mohammed.ismail@zstoss.in'
+        ip_236 = StaticIP.query.filter_by(ip_id='236BG1').first()
+        if ip_236:
+            ip_236.last_billed_month = None
+        db.session.commit()
             
         for ip_data in ips_to_seed:
             static_ip = StaticIP.query.filter_by(ip_id=ip_data['ip_id']).first()
