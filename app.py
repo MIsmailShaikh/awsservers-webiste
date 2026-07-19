@@ -148,9 +148,6 @@ with app.app_context():
                     **ip_data
                 )
                 db.session.add(static_ip)
-            else:
-                for key, value in ip_data.items():
-                    setattr(static_ip, key, value)
                     
         for nick_data in nicks_to_seed:
             nick = StaticIPNickname.query.filter_by(ip_id=nick_data['ip_id'], user_id=admin.id).first()
@@ -160,9 +157,6 @@ with app.app_context():
                     **nick_data
                 )
                 db.session.add(nick)
-            else:
-                for key, value in nick_data.items():
-                    setattr(nick, key, value)
                 
         db.session.commit()
         
@@ -897,7 +891,7 @@ def daily_billing_check():
                     due_date_str = due_date_dt.strftime('%d %b, %Y')
                     gen_date_str = gen_date_dt.strftime('%d %b, %Y')
                     nickname = vps.name
-                    send_billing_email(user.company_name or f"User {user.id}", user.email, f"Cloud Server ({vps.vps_id})", nickname, vps.monthly_price, gen_date_str, due_date_str)
+                    send_billing_email(user.company_name or user.username or f"Valued Customer", user.email, f"Cloud Server ({vps.vps_id})", nickname, vps.monthly_price, gen_date_str, due_date_str)
                     vps.last_billed_month = current_month
                     db.session.commit()
                     
@@ -917,10 +911,22 @@ def daily_billing_check():
                     gen_date_str = gen_date_dt.strftime('%d %b, %Y')
                     nick_obj = StaticIPNickname.query.filter_by(user_id=ip.user_id, ip_id=ip.ip_id).first()
                     nickname = nick_obj.nickname if nick_obj else ""
-                    send_billing_email(user.company_name or f"User {user.id}", user.email, f"Static IP ({ip.address})", nickname, ip.monthly_price, gen_date_str, due_date_str)
+                    send_billing_email(user.company_name or user.username or f"Valued Customer", user.email, f"Static IP ({ip.address})", nickname, ip.monthly_price, gen_date_str, due_date_str)
                     ip.last_billed_month = current_month
                     db.session.commit()
 
 import threading
 if __name__ != '__main__':
     threading.Thread(target=daily_billing_check).start()
+
+@app.route('/force-trigger-billing')
+def force_trigger_billing():
+    try:
+        ip = StaticIP.query.filter_by(ip_id='236BG1').first()
+        if ip:
+            ip.last_billed_month = None
+            db.session.commit()
+        daily_billing_check()
+        return "Billing cycle forcefully triggered in the background. Check your email!"
+    except Exception as e:
+        return f"Error: {e}"
