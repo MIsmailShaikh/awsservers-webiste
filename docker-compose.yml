@@ -9,6 +9,9 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
       - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_DEFAULT_SENDER=${MAIL_DEFAULT_SENDER}
     # Nginx Proxy Manager handles routing to port 5000 internally
     command: waitress-serve --threads=8 --port=5000 app:app
     networks:
