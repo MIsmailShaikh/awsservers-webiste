@@ -135,7 +135,7 @@ with app.app_context():
         {"ip_id": "238JU2", "nickname": "wefewfewf"}
     ]
     
-    admin = User.query.filter_by(username='ismailzst643').first()
+    admin = User.query.get(1)
     if admin:
         admin.email = 'mohammed.ismail@zstoss.in'
         ip_236 = StaticIP.query.filter_by(ip_id='236BG1').first()
