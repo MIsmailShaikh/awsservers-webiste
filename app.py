@@ -859,3 +859,11 @@ def daily_billing_check():
                     send_billing_email(user.company_name or f"User {user.id}", user.email, f"Static IP ({ip.address})", nickname, ip.monthly_price, gen_date_str, due_date_str)
                     ip.last_billed_month = current_month
                     db.session.commit()
+
+import threading
+if __name__ != '__main__':
+    threading.Thread(target=daily_billing_check).start()
+
+if __name__ == '__main__':
+    threading.Thread(target=daily_billing_check).start()
+    app.run(host='0.0.0.0', port=5000, debug=True)
