@@ -6,6 +6,9 @@
   <title>Manage Static IP {{ ip.id }} — AVPSSERVER</title> <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/avpsserverlogo.png') }}" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>window.RAZORPAY_KEY = "{{ razorpay_key_id }}";</script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="/static/app.js"></script>
   <script>
     tailwind.config = {
       theme: {
