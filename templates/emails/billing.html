@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -44,26 +44,26 @@
             <div class="bill-details">
                 <table>
                     <tr>
-                        <td class="label">Service Description:</td>
-                        <td class="value">{{ item_name }}</td>
+                        <td class="label" style="padding: 8px 0; font-size: 16px; color: #64748b; font-weight: 600; width: 45%;">Service Description:</td>
+                        <td class="value" style="padding: 8px 0; font-size: 16px; color: #0f172a; font-weight: bold; text-align: right;">{{ item_name }}</td>
                     </tr>
                     {% if nickname %}
                     <tr>
-                        <td class="label">Nickname:</td>
-                        <td class="value">{{ nickname }}</td>
+                        <td class="label" style="padding: 8px 0; font-size: 16px; color: #64748b; font-weight: 600; width: 45%;">Nickname:</td>
+                        <td class="value" style="padding: 8px 0; font-size: 16px; color: #0f172a; font-weight: bold; text-align: right;">{{ nickname }}</td>
                     </tr>
                     {% endif %}
                     <tr>
-                        <td class="label">Bill Generation Date:</td>
-                        <td class="value">{{ gen_date }}</td>
+                        <td class="label" style="padding: 8px 0; font-size: 16px; color: #64748b; font-weight: 600; width: 45%;">Bill Generation Date:</td>
+                        <td class="value" style="padding: 8px 0; font-size: 16px; color: #0f172a; font-weight: bold; text-align: right;">{{ gen_date }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Due Date:</td>
-                        <td class="value">{{ due_date }}</td>
+                        <td class="label" style="padding: 8px 0; font-size: 16px; color: #64748b; font-weight: 600; width: 45%;">Due Date:</td>
+                        <td class="value" style="padding: 8px 0; font-size: 16px; color: #0f172a; font-weight: bold; text-align: right;">{{ due_date }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Total Amount:</td>
-                        <td class="value" style="color: #6366f1; font-size: 20px;">₹{{ "%.2f"|format(amount) }}</td>
+                        <td class="label" style="padding: 8px 0; font-size: 16px; color: #64748b; font-weight: 600; width: 45%;">Total Amount:</td>
+                        <td class="value" style="padding: 8px 0; font-size: 20px; color: #6366f1; font-weight: bold; text-align: right;">₹{{ "%.2f"|format(amount) }}</td>
                     </tr>
                 </table>
             </div>
