@@ -126,7 +126,7 @@ with app.app_context():
     # Force update/seed Static IP instances to match the UI and fix dates
     ips_to_seed = [
         {"ip_id": "238JU2", "address": "15.207.89.102", "billing_date": 6, "due_date": 10, "monthly_price": 10.0, "status": "Active", "is_reserved": True, "included_in": "VPS: 56892AHF", "last_billed_month": None}, 
-        {"ip_id": "236BG1", "address": "3.108.12.55", "billing_date": 23, "due_date": 27, "monthly_price": 10.0, "status": "Active", "is_reserved": True, "included_in": "VPS: 56892AHF", "last_billed_month": None}, 
+        {"ip_id": "236BG1", "address": "3.108.12.55", "billing_date": 19, "due_date": 23, "monthly_price": 10.0, "status": "Active", "is_reserved": True, "included_in": "VPS: 56892AHF", "last_billed_month": None}, 
         {"ip_id": "8547JW4", "address": "72.60.220.68", "billing_date": 16, "due_date": 18, "monthly_price": 10.0, "status": "Active", "is_reserved": False, "included_in": "Standard Server Plan", "last_billed_month": "2026-07"}
     ]
     
