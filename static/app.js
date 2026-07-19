@@ -263,7 +263,10 @@ function closeLoginModal() {
   }
 }
 
+const loginBtnMobile = document.getElementById('nav-cta-login-mobile');
+
 if (loginBtn) loginBtn.addEventListener('click', openLoginModal);
+if (loginBtnMobile) loginBtnMobile.addEventListener('click', openLoginModal);
 if (closeModalBtn) closeModalBtn.addEventListener('click', closeLoginModal);
 if (modalOverlay) modalOverlay.addEventListener('click', closeLoginModal);
 
