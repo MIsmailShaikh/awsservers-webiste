@@ -178,6 +178,10 @@
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 uppercase tracking-wide">
                   <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Pending
                 </span>
+              {% elif ip.bill_status == "Included in VPS" %}
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase tracking-wide">
+                  Included in VPS
+                </span>
               {% else %}
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200 uppercase tracking-wide">
                   <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span> Unpaid

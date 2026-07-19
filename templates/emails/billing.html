@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -23,8 +23,8 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
+    <div class="container" style="max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        <div class="header" style="background-color: #1e293b; padding: 20px; text-align: left; border-bottom: 4px solid #6366f1;">
             <table cellpadding="0" cellspacing="0" border="0">
                 <tr>
                     <td valign="middle" style="padding-right: 2px;">
@@ -36,45 +36,45 @@
                 </tr>
             </table>
         </div>
-        <div class="content">
-            <h1>Your Bill is Ready</h1>
-            <p>Hello <strong>{{ user_name }}</strong>,</p>
-            <p>This is a quick reminder that your bill for the upcoming cycle has been generated. Please review the details below:</p>
+        <div class="content" style="padding: 40px;">
+            <h1 style="color: #0f172a; font-size: 24px; margin-top: 0; margin-bottom: 20px;">Your Bill is Ready</h1>
+            <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">Hello <strong>{{ user_name }}</strong>,</p>
+            <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">This is a quick reminder that your bill for the upcoming cycle has been generated. Please review the details below:</p>
             
-            <div class="bill-details">
-                <table>
+            <div class="bill-details" style="background: #f1f5f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+                <table style="width: 100%;">
                     <tr>
-                        <td class="label">Service Description:</td>
-                        <td class="value">{{ item_name }}</td>
+                        <td class="label" style="padding: 8px 0; font-size: 16px; color: #64748b; font-weight: 600; width: 45%;">Service Description:</td>
+                        <td class="value" style="padding: 8px 0; font-size: 16px; color: #0f172a; font-weight: bold; text-align: right;">{{ item_name }}</td>
                     </tr>
                     {% if nickname %}
                     <tr>
-                        <td class="label">Nickname:</td>
-                        <td class="value">{{ nickname }}</td>
+                        <td class="label" style="padding: 8px 0; font-size: 16px; color: #64748b; font-weight: 600; width: 45%;">Nickname:</td>
+                        <td class="value" style="padding: 8px 0; font-size: 16px; color: #0f172a; font-weight: bold; text-align: right;">{{ nickname }}</td>
                     </tr>
                     {% endif %}
                     <tr>
-                        <td class="label">Bill Generation Date:</td>
-                        <td class="value">{{ gen_date }}</td>
+                        <td class="label" style="padding: 8px 0; font-size: 16px; color: #64748b; font-weight: 600; width: 45%;">Bill Generation Date:</td>
+                        <td class="value" style="padding: 8px 0; font-size: 16px; color: #0f172a; font-weight: bold; text-align: right;">{{ gen_date }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Due Date:</td>
-                        <td class="value">{{ due_date }}</td>
+                        <td class="label" style="padding: 8px 0; font-size: 16px; color: #64748b; font-weight: 600; width: 45%;">Due Date:</td>
+                        <td class="value" style="padding: 8px 0; font-size: 16px; color: #0f172a; font-weight: bold; text-align: right;">{{ due_date }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Total Amount:</td>
-                        <td class="value" style="color: #6366f1; font-size: 20px;">₹{{ "%.2f"|format(amount) }}</td>
+                        <td class="label" style="padding: 8px 0; font-size: 16px; color: #64748b; font-weight: 600; width: 45%;">Total Amount:</td>
+                        <td class="value" style="padding: 8px 0; font-size: 20px; color: #6366f1; font-weight: bold; text-align: right;">₹{{ "%.2f"|format(amount) }}</td>
                     </tr>
                 </table>
             </div>
             
-            <div class="btn-container">
-                <a href="https://avpsserver.in/manage" class="btn">Login & Pay Securely</a>
+            <div class="btn-container" style="text-align: center; margin-top: 30px;">
+                <a href="https://avpsserver.in/manage" class="btn" style="display: inline-block; background-color: #6366f1; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 16px; padding: 14px 32px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);">Login & Pay Securely</a>
             </div>
             
-            <p style="margin-top: 40px; font-size: 14px; color: #64748b;">If you have already made this payment, please ignore this email. For any queries, contact our support team at <a href="mailto:support@avpsserver.in" style="color: #6366f1;">support@avpsserver.in</a>.</p>
+            <p style="margin-top: 40px; font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 20px;">If you have already made this payment, please ignore this email. For any queries, contact our support team at <a href="mailto:support@avpsserver.in" style="color: #6366f1;">support@avpsserver.in</a>.</p>
         </div>
-        <div class="footer">
+        <div class="footer" style="text-align: center; padding: 20px; color: #94a3b8; font-size: 14px; background: #f8fafc; border-top: 1px solid #e2e8f0;">
             &copy; {{ current_year }} AVPS Server. All rights reserved.
         </div>
     </div>

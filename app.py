@@ -7,17 +7,17 @@ from flask_apscheduler import APScheduler
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import os
 from dotenv import load_dotenv
-from flask_mail import Mail, Message
-from flask_apscheduler import APScheduler
-import os
-from datetime import datetime
-import calendar
 from models import db, User, VPSInstance, Transaction, StaticIPNickname, StaticIP
+from apscheduler.schedulers.background import BackgroundScheduler
 
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'super_secret_key_change_in_production'
+app.secret_key = 'avpsserver_secret_key'
+
+# Suppress waitress.queue warnings which spam on asset load
+import logging
+logging.getLogger('waitress.queue').setLevel(logging.ERROR)
 
 app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
 app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
@@ -122,7 +122,51 @@ with app.app_context():
             )
             db.session.add(vps)
             db.session.commit()
-
+            
+    # Force update/seed Static IP instances to match the UI and fix dates
+    ips_to_seed = [
+        {"ip_id": "238JU2", "address": "15.207.89.102", "billing_date": 4, "due_date": 6, "monthly_price": 10.0, "status": "Active", "is_reserved": True, "included_in": "VPS: 56892AHF"}, 
+        {"ip_id": "236BG1", "address": "3.108.12.55", "billing_date": 19, "due_date": 23, "monthly_price": 10.0, "status": "Active", "is_reserved": True, "included_in": "VPS: 56892AHF"}, 
+        {"ip_id": "8547JW4", "address": "72.60.220.68", "billing_date": 16, "due_date": 18, "monthly_price": 10.0, "status": "Active", "is_reserved": False, "included_in": "Standard Server Plan", "last_billed_month": "2026-07"},
+        {"ip_id": "9482KL1", "address": "203.0.113.42", "billing_date": 16, "due_date": 20, "monthly_price": 0.0, "status": "Active", "is_reserved": True, "included_in": "VPS: 56892AHF"}
+    ]
+    
+    nicks_to_seed = [
+        {"ip_id": "238JU2", "nickname": "wefewfewf"}
+    ]
+    
+    admin = User.query.get(1)
+    if admin:
+        admin.email = 'mohammed.ismail@zstoss.in'
+        db.session.commit()
+            
+        for ip_data in ips_to_seed:
+            static_ip = StaticIP.query.filter_by(ip_id=ip_data['ip_id']).first()
+            if not static_ip:
+                static_ip = StaticIP(
+                    user_id=admin.id,
+                    **ip_data
+                )
+                db.session.add(static_ip)
+                    
+        for nick_data in nicks_to_seed:
+            nick = StaticIPNickname.query.filter_by(ip_id=nick_data['ip_id'], user_id=admin.id).first()
+            if not nick:
+                nick = StaticIPNickname(
+                    user_id=admin.id,
+                    **nick_data
+                )
+                db.session.add(nick)
+                
+        db.session.commit()
+        
+    try:
+        from sqlalchemy import text
+        db.session.execute(text('ALTER TABLE vps_instance ADD COLUMN last_billed_month VARCHAR(10)'))
+        db.session.execute(text('ALTER TABLE static_ip ADD COLUMN last_billed_month VARCHAR(10)'))
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
 
 from datetime import timedelta
 
@@ -309,30 +353,39 @@ def get_static_ips():
         billing_date = db_ip.billing_date
         due_date = db_ip.due_date
         
-        gen_date, upcoming_date = get_next_dates(due_date)
-        is_paid = datetime.now() < gen_date
-        is_pending = gen_date <= datetime.now() <= upcoming_date
+        gen_offset = due_date - billing_date
+        if gen_offset <= 0:
+            gen_offset = 4
+            
+        due_date_str, gen_date_str, can_pay, bill_status = get_next_dates(due_date, gen_offset=gen_offset)
         
-        # Calculate status
-        if is_paid:
-            bill_status = 'Paid'
-        elif is_pending:
-            bill_status = 'Pending'
-        else:
-            bill_status = 'Overdue'
+        if db_ip.monthly_price == 0.0:
+            bill_status = "Included in VPS"
+            due_date_str = "Included in VPS"
+            can_pay = False
             
         ips.append({
             "id": db_ip.ip_id,
             "address": db_ip.address,
-            "due_date": gen_date.strftime('%d %b, %Y'),
+            "due_date": due_date_str,
+            "gen_date": gen_date_str,
             "monthly_price": db_ip.monthly_price,
-            "type": "Reserved Static IP",
+            "type": "Reserved Static IP" if db_ip.is_reserved else "Static IP",
             "status": db_ip.status,
             "is_reserved": db_ip.is_reserved,
             "included": db_ip.included_in,
             "bill_status": bill_status,
-            "can_pay": bill_status in ['Pending', 'Overdue']
+            "can_pay": can_pay
         })
+        
+    status_priority = {
+        "Unpaid": 1,
+        "Pending": 2,
+        "Upcoming": 3,
+        "Paid": 4,
+        "Included in VPS": 5
+    }
+    ips.sort(key=lambda x: status_priority.get(x['bill_status'], 99))
         
     return ips
 
@@ -786,7 +839,8 @@ def send_billing_email(user_name, user_email, item_name, nickname, amount, gen_d
     try:
         mail.send(msg)
     except Exception as e:
-        print(f"Failed to send email to {user_email}: {e}")
+        print(f"Failed to send email to {user_email}: {e}", flush=True)
+        raise e
 
 
 @app.route('/payment-link-success/<order_id>')
@@ -837,14 +891,19 @@ def daily_billing_check():
                 if user:
                     due_date_str = due_date_dt.strftime('%d %b, %Y')
                     gen_date_str = gen_date_dt.strftime('%d %b, %Y')
-                    nickname = vps.hostname
-                    send_billing_email(user.company_name or f"User {user.id}", user.email, f"Cloud Server ({vps.vps_id})", nickname, vps.monthly_price, gen_date_str, due_date_str)
+                    nickname = vps.name
+                    send_billing_email(user.company_name or user.username or f"Valued Customer", user.email, f"Cloud Server ({vps.vps_id})", nickname, vps.monthly_price * 1.18, gen_date_str, due_date_str)
                     vps.last_billed_month = current_month
                     db.session.commit()
                     
         # 2. Check Static IPs
         static_ips = StaticIP.query.all()
         for ip in static_ips:
+            if ip.monthly_price == 10.0 or ip.monthly_price == 13966.95:
+                ip.monthly_price = 14285.52
+                db.session.commit()
+            if ip.monthly_price == 0.0:
+                continue
             due_date_dt = datetime.now().replace(day=ip.due_date)
             if datetime.now() > due_date_dt:
                 due_date_dt = (due_date_dt.replace(day=1) + timedelta(days=32)).replace(day=ip.due_date)
@@ -856,7 +915,7 @@ def daily_billing_check():
                     gen_date_str = gen_date_dt.strftime('%d %b, %Y')
                     nick_obj = StaticIPNickname.query.filter_by(user_id=ip.user_id, ip_id=ip.ip_id).first()
                     nickname = nick_obj.nickname if nick_obj else ""
-                    send_billing_email(user.company_name or f"User {user.id}", user.email, f"Static IP ({ip.address})", nickname, ip.monthly_price, gen_date_str, due_date_str)
+                    send_billing_email(user.company_name or user.username or f"Valued Customer", user.email, f"Static IP (ID: {ip.ip_id})", nickname, ip.monthly_price * 1.18, gen_date_str, due_date_str)
                     ip.last_billed_month = current_month
                     db.session.commit()
 
