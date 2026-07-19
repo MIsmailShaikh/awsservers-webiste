@@ -103,7 +103,7 @@
     </header>
 
     <!-- Page Content -->
-    <div class="flex-1 overflow-auto p-6 lg:p-10 bg-slate-50/50">
+    <div class="flex-1 overflow-auto p-6 pb-24 lg:p-10 lg:pb-10 bg-slate-50/50">
       
       {% if payment_result %}
       <div class="mb-8 p-4 rounded-xl border {% if payment_result.status == 'SUCCESS' or payment_result.status == 'PAID' %}bg-emerald-50 border-emerald-200{% elif payment_result.status == 'PENDING' %}bg-amber-50 border-amber-200{% else %}bg-red-50 border-red-200{% endif %}">
