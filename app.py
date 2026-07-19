@@ -361,6 +361,11 @@ def get_static_ips():
             gen_offset = 4
             
         due_date_str, gen_date_str, can_pay, bill_status = get_next_dates(due_date, gen_offset=gen_offset)
+        
+        if db_ip.monthly_price == 0.0:
+            bill_status = "Included in VPS"
+            due_date_str = "Included in VPS"
+            can_pay = False
             
         ips.append({
             "id": db_ip.ip_id,
@@ -886,6 +891,8 @@ def daily_billing_check():
         # 2. Check Static IPs
         static_ips = StaticIP.query.all()
         for ip in static_ips:
+            if ip.monthly_price == 0.0:
+                continue
             due_date_dt = datetime.now().replace(day=ip.due_date)
             if datetime.now() > due_date_dt:
                 due_date_dt = (due_date_dt.replace(day=1) + timedelta(days=32)).replace(day=ip.due_date)
