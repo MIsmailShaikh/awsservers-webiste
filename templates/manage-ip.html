@@ -210,6 +210,10 @@
               <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
               <span class="text-[10px] font-bold text-amber-700 uppercase tracking-wide">Pending</span>
             </div>
+            {% elif ip.bill_status == "Included in VPS" %}
+            <div class="inline-flex items-center gap-1.5 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200">
+              <span class="text-[10px] font-bold text-indigo-700 uppercase tracking-wide">Included in VPS</span>
+            </div>
             {% else %}
             <div class="inline-flex items-center gap-1.5 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
               <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
@@ -224,7 +228,17 @@
               <span class="text-[15px] font-bold text-slate-800">{{ ip.gen_date }}</span>
             </div>
             
-            {% if ip.can_pay %}
+            {% if ip.bill_status == "Included in VPS" %}
+            <div class="flex justify-between items-center pb-6 border-b border-slate-50">
+              <span class="text-sm text-slate-500 font-medium">Due date</span>
+              <span class="text-[15px] font-bold text-slate-800">Included in VPS</span>
+            </div>
+            
+            <div class="flex justify-between items-center pb-6 border-b border-slate-50">
+              <span class="text-sm text-slate-500 font-medium">Amount due</span>
+              <span class="text-[15px] font-bold text-slate-800">Included in VPS</span>
+            </div>
+            {% else %}
             <div class="flex justify-between items-center pb-6 border-b border-slate-50">
               <span class="text-sm text-slate-500 font-medium">Due date</span>
               <span class="text-[15px] font-bold text-slate-800">{{ ip.due_date }}</span>
@@ -240,16 +254,6 @@
                 <span class="text-[15px] font-bold text-slate-800">Included</span>
               {% endif %}
             </div>
-            {% else %}
-            <div class="flex justify-between items-center pb-6 border-b border-slate-50">
-              <span class="text-sm text-slate-400 font-medium">Due date</span>
-              <span class="text-[15px] font-bold text-slate-400">--</span>
-            </div>
-            
-            <div class="flex justify-between items-center pb-6 border-b border-slate-50">
-              <span class="text-sm text-slate-400 font-medium">Amount due</span>
-              <span class="text-[15px] font-bold text-slate-400">--</span>
-            </div>
             {% endif %}
           </div>
 
@@ -263,6 +267,10 @@
             <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center justify-center gap-2">
               <svg class="animate-spin w-4 h-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
               <p class="text-sm font-bold text-slate-500">Bill is generating...</p>
+            </div>
+            {% elif ip.bill_status == "Included in VPS" %}
+            <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex items-center justify-center">
+              <p class="text-sm font-bold text-indigo-600">This IP is included in your VPS plan at no extra charge.</p>
             </div>
             {% elif ip.bill_status == "Pending" %}
             <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-center gap-3">
